@@ -1,0 +1,161 @@
+接下來的工作，將分為兩個方向進行。 從 mal 方找尋 emacs 方的對應元素，以及從 emacs 的執行期行為找尋對應的程式以決定實作的優先順序。
+
+* 從 mal 方找尋 emacs 方的對應元素
+** macroexpand
+macroexpand 是一個特殊的算子
+
+mal 實作如下：
+
+[[bookmark:mal/macroexpand][mal/macroexpand]]
+
+    case 'macroexpand':
+        return macroexpand(a1, env);
+
+[[bookmark:mal/function%20macroexpand][mal/function macroexpand]]
+
+function macroexpand(ast, env) {
+    while (is_macro_call(ast, env)) {
+        var mac = env.get(ast[0]);
+        ast = mac.apply(mac, ast.slice(1));
+    }
+    return ast;
+}
+
+emacs 的實作如下：
+
+[[bookmark:eval/macroexpand][Bookmark: eval/macroexpand]]
+
+DEFUN ("macroexpand", Fmacroexpand, Smacroexpand, 1, 2, 0,
+       doc: /* Return result of expanding macros at top level of FORM.
+If FORM is not a macro call, it is returned unchanged.
+Otherwise, the macro is expanded and the expansion is considered
+in place of FORM.  When a non-macro-call results, it is returned.
+
+The second optional arg ENVIRONMENT specifies an environment of macro
+definitions to shadow the loaded ones for use in file byte-compilation.  */)
+  (Lisp_Object form, Lisp_Object environment)
+{
+  /* With cleanups from Hallvard Furuseth.  */
+  register Lisp_Object expander, sym, def, tem;
+
+  while (1)
+    {
+      /* Come back here each time we expand a macro call,
+	 in case it expands into another macro call.  */
+      if (!CONSP (form))
+	break;
+      /* Set SYM, give DEF and TEM right values in case SYM is not a symbol. */
+      def = sym = XCAR (form);
+      tem = Qnil;
+      /* Trace symbols aliases to other symbols
+	 until we get a symbol that is not an alias.  */
+      while (SYMBOLP (def))
+	{
+	  QUIT;
+	  sym = def;
+	  tem = Fassq (sym, environment);
+	  if (NILP (tem))
+	    {
+	      def = XSYMBOL (sym)->function;
+	      if (!NILP (def))
+		continue;
+	    }
+	  break;
+	}
+      /* Right now TEM is the result from SYM in ENVIRONMENT,
+	 and if TEM is nil then DEF is SYM's function definition.  */
+      if (NILP (tem))
+	{
+	  /* SYM is not mentioned in ENVIRONMENT.
+	     Look at its function definition.  */
+	  struct gcpro gcpro1;
+	  GCPRO1 (form);
+	  def = Fautoload_do_load (def, sym, Qmacro);
+	  UNGCPRO;
+	  if (!CONSP (def))
+	    /* Not defined or definition not suitable.  */
+	    break;
+	  if (!EQ (XCAR (def), Qmacro))
+	    break;
+	  else expander = XCDR (def);
+	}
+      else
+	{
+	  expander = XCDR (tem);
+	  if (NILP (expander))
+	    break;
+	}
+      {
+	Lisp_Object newform = apply1 (expander, XCDR (form));
+	if (EQ (form, newform))
+	  break;
+	else
+	  form = newform;
+      }
+    }
+  return form;
+}
+
+** try*/catch*
+catch 是一個特殊的算子， mal 中使用另一個名字： try*/catch*
+
+mal 實作如下：
+
+[[bookmark:try%20in%20mal][Bookmark: try in mal]]
+
+    case "try*":
+        try {
+            return EVAL(a1, env);
+        } catch (exc) {
+            if (a2 && a2[0].value === "catch*") {
+                if (exc instanceof Error) { exc = exc.message; }
+                return EVAL(a2[2], new Env(env, [a2[1]], [exc]));
+            } else {
+                throw exc;
+            }
+        }
+
+emacs 的實作如下：
+
+[[bookmark:eval.c/catch][Bookmark: eval.c/catch]]
+
+DEFUN ("catch", Fcatch, Scatch, 1, UNEVALLED, 0,
+       doc: /* Eval BODY allowing nonlocal exits using `throw'.
+TAG is evalled to get the tag to use; it must not be nil.
+
+Then the BODY is executed.
+Within BODY, a call to `throw' with the same TAG exits BODY and this `catch'.
+If no throw happens, `catch' returns the value of the last BODY form.
+If a throw happens, it specifies the value to return from `catch'.
+usage: (catch TAG BODY...)  */)
+  (Lisp_Object args)
+{
+  register Lisp_Object tag;
+  struct gcpro gcpro1;
+
+  GCPRO1 (args);
+  tag = eval_sub (XCAR (args));
+  UNGCPRO;
+  return internal_catch (tag, Fprogn, XCDR (args));
+}
+
+* 從 emacs 的執行期行為找尋對應的程式
+程式執行開頭頭有顯示一個 splash 畫面，我們將從此畫面的元素著手，得到初始載入順序相關資訊。
+
+startup.el 是第一個被載入執行的 lisp 檔案。 經分析後發現此一行為由 Makefile.in 所指定。
+
+** bootstrap-emacs
+
+[[bookmark:bootstrap-emacs][Bookmark: bootstrap-emacs]]
+
+在建置 emacs 的過程中，第一步為產生此一 "拔靴法(Bootstrap)" 的空殼；其 --load 參數指定了 loadup.el 及 bootstrap.el 兩個預載檔案；其中 loadup.el 會再指定預載檔案
+
+*** 
+
+
+
+** dumped Emacs
+
+[[bookmark:dumped%20Emacs][Bookmark: dumped Emacs]]
+
+在建置 emacs 的過程中，第二步為產生此一 "dumped Emacs" 的預載映象檔；其 --load 參數指定了 loadup.el 及 dump.el 兩個預載檔案；其中 loadup.el 會再指定預載檔案
