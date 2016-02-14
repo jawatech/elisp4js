@@ -40,7 +40,7 @@ function read_atom (reader) {
         return types._keyword(token.slice(1));
     } else if (token === "nil") {
         return null;
-    } else if (token === "true") {
+    } else if (token === "t") {
         return true;
     } else if (token === "false") {
         return false;

@@ -97,7 +97,7 @@ function concat(lst) {
 
 function nth(lst, idx) {
     if (idx < lst.length) { return lst[idx]; }
-    else                  { throw new Error("nth: index out of range"); }
+    else                  { return 'nil'; } //throw new Error("nth: index out of range"); }
 }
 
 function first(lst) { return lst[0]; }
@@ -163,6 +163,7 @@ function swap_BANG(atm, f) {
 // types.ns is namespace of type functions
 var ns = {'type': types._obj_type,
           '=': types._equal_Q,
+          'equal': types._equal_Q,
           'throw': mal_throw,
           'nil?': types._nil_Q,
           'true?': types._true_Q,
@@ -171,6 +172,7 @@ var ns = {'type': types._obj_type,
           'symbol?': types._symbol_Q,
           'keyword': types._keyword,
           'keyword?': types._keyword_Q,
+          'fboundp': types._function_Q,
 
           'pr-str': pr_str,
           'str': str,

@@ -1,6 +1,6 @@
 * synopsis
-node js/temacs-24.5.js js/tests/stepA_mal.mal # original mal test; will work unconditionally
-node js/temacs-24.5.js js/stepA_mal.mal       # modified test; incoporating loadup gradually
+node js/stepA_mal.js js/tests/stepA_mal.mal   # original mal test; will work unconditionally
+node js/temacs-24.5.js js/stepA_mal.mal       # continuously incoporating loadup gradually
 node js/temacs-24.5.js js/loadup.el           # benchmark; shall work finally
 
 此一指令將載入 emacs 預載的 loadup.el 並進行 sanity check ，驗證 temacs 的完成度。
@@ -29,7 +29,11 @@ startup.el 是第一個被載入執行的 lisp 檔案。 經分析後發現此�
 **** load "startup"
  [[bookmark:load%20"startup"][Bookmark: load "startup"]]
 
- 在此檔末端並指定執行 startup.el 中的 top-level 函數，也就是 normal-top-level。 其它載入檔案如下：
+ 在此檔末端並指定執行 startup.el 中的 top-level 函數，也就是 normal-top-level。 
+
+startup.el 有特定的字串，似乎與視窗介面的建立有關。
+
+其它載入檔案如下：
 
  (load "emacs-lisp/byte-run")
  (load "emacs-lisp/backquote")
@@ -166,7 +170,72 @@ startup.el 是第一個被載入執行的 lisp 檔案。 經分析後發現此�
 
 
 *** 初始化@main()@emacs.c: initXXX & syms_of_XXX (defsubr, DEFVAR & DEFSYM)
-*** C / Lisp 兩用函數的宣告/定義及登錄： DEFUN & defsubr@syms_of_XXX（）
+
+**** init_obarray (object array = Vobarray)
+[[bookmark:init_obarray%20(void)][Bookmark: init_obarray (void)]]
+
+obarray 就是 object array 的意思，object 的型態都是 Lisp_Object
+
+initial_obarray 是最初始的物件陣列，包含了最開始的三個常量： Qt, Qnil, Qunbound
+
+最陽春的符號就是 Qt ，其定義代表最低要求 intern_c_string & SET_SYMBOL_VAL
+***** Qt: "t"
+****** Qt = intern_c_string ("t");
+****** SET_SYMBOL_VAL (XSYMBOL (Qt), Qt);
+****** XSYMBOL (Qt)->constant = 1;
+
+***** Qnil: "nil"
+  /* Set temporary dummy values to Qnil and Vpurify_flag to satisfy the
+     NILP (Vpurify_flag) check in intern_c_string.  */
+  Qnil = make_number (-1); Vpurify_flag = make_number (1);
+****** Qnil = intern_c_string ("nil");
+****** SET_SYMBOL_VAL (XSYMBOL (Qnil), Qnil);
+****** XSYMBOL (Qnil)->constant = 1;
+  XSYMBOL (Qnil)->declared_special = 1;
+  set_symbol_plist (Qnil, Qnil);
+  set_symbol_function (Qnil, Qnil);
+
+   XSYMBOL (Qnil)->declared_special = 1;
+
+***** Qunbound: "unbound"
+  Qunbound = Fmake_symbol (build_pure_c_string ("unbound"));
+  /* Fmake_symbol inits fields of new symbols with Qunbound and Qnil,
+     so those two need to be fixed manually.  */
+****** SET_SYMBOL_VAL (XSYMBOL (Qunbound), Qunbound);
+  set_symbol_function (Qunbound, Qnil);
+  set_symbol_plist (Qunbound, Qnil);
+
+**** init_XXX: 以 Vcommand_line_args 為例
+[[bookmark:init_cmdargs%20(argc,%20argv,%20skip_args,%20original_pwd);][Bookmark: init_cmdargs (argc, argv, skip_args, original_pwd);]]
+
+[[bookmark:init_cmdargs%20(int%20argc,%20char%20**argv,%20int%20skip_args,%20char%20*original_pwd)][Bookmark: init_cmdargs (int argc, char **argv, int skip_args, char *original_pwd)]]
+
+[[bookmark:Fcons%20(build_unibyte_string%20(argv%5Bi%5D),%20Vcommand_line_args);][Bookmark: Fcons (build_unibyte_string (argv{i}), Vcommand_line_args);]]
+
+  Vcommand_line_args = Qnil;
+
+  for (i = argc - 1; i >= 0; i--)
+    {
+      if (i == 0 || i > skip_args)
+	/* For the moment, we keep arguments as is in unibyte strings.
+	   They are decoded in the function command-line after we know
+	   locale-coding-system.  */
+	Vcommand_line_args
+	  = Fcons (build_unibyte_string (argv[i]), Vcommand_line_args);
+    }
+
+**** DEFVAR in syms_of_emacs ()
+[[bookmark:syms_of_emacs%20();][Bookmark: syms_of_emacs ();]]
+
+[[bookmark:void%20syms_of_emacs%20(void)][Bookmark: void syms_of_emacs (void)]]
+
+[[bookmark:DEFVAR_LISP%20("command-line-args",%20Vcommand_line_args,][Bookmark: DEFVAR_LISP ("command-line-args", Vcommand_line_args,]]
+
+  DEFVAR_LISP ("command-line-args", Vcommand_line_args,
+	       doc: /* Args passed by shell to Emacs, as a list of strings.
+Many arguments are deleted from the list as they are processed.  */);
+
+*** C / Lisp 兩用函數的宣告/定義及登錄： DEFUN (& defsubr) @syms_of_XXX（）
 以 if 這個函數來作為範例，它的宣告/定義是 DEFUN ("if", Fif, Sif, 2, UNEVALLED, 0 …
 
 前面三個參數是最重要的， "if" 是它在 lisp 程式中的名稱， Fif 是在 C 程式碼中的名稱， 至於 Sif 可以看做是紀錄相關資訊的結構 （struct） 的名稱。
@@ -187,7 +256,7 @@ sname 此一結構的 an 成員 (0<=n<=9) 即為 FXXX 形式的函數（指標�
 
 至於定義後要如何被 lisp 的程式碼找到並呼叫呢？ 這就需要以 defsubr 來登錄 Sif 結構了。 
 
-**** defsubr (&SXXX); 登錄 SXXX 結構
+**** defsubr (&SXXX); 將名稱加到 Vobarray 中、登錄 SXXX 結構
 
  [[bookmark:defsubr][Bookmark: defsubr]]
 ***** intern_c_string 
@@ -200,7 +269,6 @@ sname 此一結構的 an 成員 (0<=n<=9) 即為 FXXX 形式的函數（指標�
 /* Intern the C string STR: return a symbol with that name,
    interned in the current Vobarray.  */
 
-obarray 就是 object array 的意思，object 的型態都是 Lisp_Object
 
 typedef EMACS_INT Lisp_Object;
 ***** XSETSUBR (tem, sname)
@@ -210,6 +278,13 @@ typedef EMACS_INT Lisp_Object;
 
 [[bookmark:set_symbol_function%20(Lisp_Object%20sym,%20Lisp_Object%20function)][Bookmark: set_symbol_function (Lisp_Object sym, Lisp_Object function)]]
 
+
+*** 為何沒有DEFCONST?DEFSYM的作用？
+https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Symbols.html#Creating-Symbols
+
+**** func, subst, alias, macro
+
+**** var, const, custom
 
 *** REPL
 在 main 函數中，呼叫了 Frecursive-edit ，這是事件處理迴圈的入口
@@ -430,6 +505,147 @@ it defaults to the value of `Vobarray'.  */
 
 
 * 從 mal 方找尋 emacs 方的對應元素
+
+** repl_env => Vobarray
+mal 在初始化的過程中，把 core.ns 的內容複製到了 repl_env 當中，因此 repl_env 才是真正意義上存放所有 symboe 的物件，core.ns 則類似於 initial_obarray
+** eval
+嘗試載入 loadup.el 的過程中，第一個遇到的問題就是找不到這個算子。這個問題倒是好解決，因為 mal 本身已經定義了 "=" 算子；不過這倒是提供我們再一次審視 scanning / parsing 的流程
+
+*** mal implementation
+core.js 中有如下定義：
+
+[[bookmark:var%20ns%20=%20{'type':%20types._obj_type,%20'=':%20types._equal_Q,][Bookmark: var ns = {'type': types._obj_type, '=': types._equal_Q,]]
+
+因此符號的代表字串 '=' ，以及對應的函數 _equal_Q ，做為 hash 的一筆資料而存在於 ns 中
+
+stepA_mal.js 中有如下定義：
+
+[[bookmark:for%20(var%20n%20in%20core.ns)%20{%20repl_env.set(types._symbol(n),%20core.ns%5Bn%5D);%20}][Bookmark: for (var n in core.ns) { repl_env.set(types._symbol(n), core.ns{n}); }]]
+
+ns 的資料再被逐筆的複製到 repl_env 中
+*** emacs implementation
+fns.c  中有如下定義：
+
+[[bookmark:DEFUN%20("equal",%20Fequal,%20Sequal,%202,%202,%200,][Bookmark: DEFUN ("equal", Fequal, Sequal, 2, 2, 0,]]
+
+[[bookmark:%20%20defsubr%20(&Sequal);][Bookmark:   defsubr (&Sequal);]]
+*** 小結:  DEFUN/defsubr -> core.ns
+** let* / DEFVAR / let
+DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料，作用比較單純
+
+Note that there are plenty of ways to make (GLOBAL) bindings: ‘defconst’, ‘defun’, ‘defvar’, 'let', ‘flet’, ‘labels’, ‘prog’, etc.
+
+根據 [[https://www.emacswiki.org/emacs/DynamicBindingVsLexicalBinding][此文]] , emacs 只有 dynamic binding ，也就是說所有符號共用一個資料結構來存放 ， 使得內層的函數/迴圈可以影響外層符號，不管這個符號背後是變數或函數。
+*** emacs implementation
+**** DEFVAR
+***** DEFVAR_LISP @ lread.c
+  [[bookmark:DEFVAR_LISP%20("command-line-args",%20Vcommand_line_args,][Bookmark: DEFVAR_LISP ("command-line-args", Vcommand_line_args,]]
+
+  [[bookmark:#define%20DEFVAR_LISP(lname,%20vname,%20doc)][Bookmark: #define DEFVAR_LISP(lname, vname, doc)]]
+
+  /* Macros we use to define forwarded Lisp variables.
+     These are used in the syms_of_FILENAME functions.
+
+     An ordinary (not in buffer_defaults, per-buffer, or per-keyboard)
+     lisp variable is actually a field in `struct emacs_globals'.  The
+     field's name begins with "f_", which is a convention enforced by
+     these macros.  Each such global has a corresponding #define in
+     globals.h; the plain name should be used in the code.
+
+     E.g., the global "cons_cells_consed" is declared as "int
+     f_cons_cells_consed" in globals.h, but there is a define:
+
+	#define cons_cells_consed globals.f_cons_cells_consed
+
+     All C code uses the `cons_cells_consed' name.  This is all done
+     this way to support indirection for multi-threaded Emacs.  */
+
+  #define DEFVAR_LISP(lname, vname, doc)		\
+    do {						\
+      static struct Lisp_Objfwd o_fwd;		\
+      defvar_lisp (&o_fwd, lname, &globals.f_ ## vname);		\
+    } while (false)
+
+  在執行最開始的 make 的過程中，所有 DEFVAR 的 vname 會被收集到 globals.h 當中， 成為 emacs_globasl 的一個欄位， 名稱會加上前綴 f_ , 然後又被巨集宣告為與 lname 同名的變數。
+***** defvar_lisp @ lread.c
+  由以下程式碼可看出，這些變數會存到 staticvec 這個陣列中。 與 defsubr 的作法類似， 此變數的名稱會被註冊為一符號，並以 obarray 存放，方便以變數名查詢符號。 符號再經 SET_SYMBOL_FWD 存放此一變數的指標。
+
+  [[bookmark:defvar_lisp%20(struct%20Lisp_Objfwd%20*o_fwd,][Bookmark: defvar_lisp (struct Lisp_Objfwd *o_fwd,]]
+
+  /* Similar but define a variable whose value is the Lisp Object stored
+     at address.  Two versions: with and without gc-marking of the C
+     variable.  The nopro version is used when that variable will be
+     gc-marked for some other reason, since marking the same slot twice
+     can cause trouble with strings.  */
+  void
+  defvar_lisp_nopro (struct Lisp_Objfwd *o_fwd,
+		     const char *namestring, Lisp_Object *address)
+  {
+    Lisp_Object sym;
+    sym = intern_c_string (namestring);
+    o_fwd->type = Lisp_Fwd_Obj;
+    o_fwd->objvar = address;
+    XSYMBOL (sym)->declared_special = 1;
+    XSYMBOL (sym)->redirect = SYMBOL_FORWARDED;
+    SET_SYMBOL_FWD (XSYMBOL (sym), (union Lisp_Fwd *)o_fwd);
+  }
+
+  void
+  defvar_lisp (struct Lisp_Objfwd *o_fwd,
+	       const char *namestring, Lisp_Object *address)
+  {
+    defvar_lisp_nopro (o_fwd, namestring, address);
+    staticpro (address);
+  }
+***** staticpro: garbage collection
+  [[bookmark:staticpro%20(Lisp_Object%20*varaddress)][Bookmark: staticpro (Lisp_Object *varaddress)]]
+
+  /***********************************************************************
+			    Protection from GC
+   ***********************************************************************/
+
+  /* Put an entry in staticvec, pointing at the variable with address
+     VARADDRESS.  */
+
+  void
+  staticpro (Lisp_Object *varaddress)
+  {
+    if (staticidx >= NSTATICS)
+      fatal ("NSTATICS too small; try increasing and recompiling Emacs.");
+    staticvec[staticidx++] = varaddress;
+  }
+***** SET_SYMBOL_FWD
+ [[bookmark:SET_SYMBOL_FWD%20(struct%20Lisp_Symbol%20*sym,%20union%20Lisp_Fwd%20*v)][Bookmark: SET_SYMBOL_FWD (struct Lisp_Symbol *sym, union Lisp_Fwd *v)]]
+
+ INLINE void
+ SET_SYMBOL_FWD (struct Lisp_Symbol *sym, union Lisp_Fwd *v)
+ {
+   eassert (sym->redirect == SYMBOL_FORWARDED);
+   sym->val.fwd = v;
+ }
+***** SYMBOL_FORWARDED 影響到的函數
+****** specbind
+ 特重要！！！ lisp 中的這些函數也需要它： let, 以及因為實質上使用了 let 而以 C 改寫的函數
+****** 其它
+******* buffer_local_value_1
+  /* Return the value of VARIABLE in BUFFER.
+  If VARIABLE does not have a buffer-local binding in BUFFER, the value
+  is the default binding of the variable. */
+******* store_frame_param
+******* mark_object
+
+***** staticvec: 與 GC 有關，不重要
+
+**** let
+
+
+*** mal: let* / def!
+最外層的環境為 repl_env ，也就是 DEFUN / DEFVAR / DEFCONST 的作用域
+
+
+*** 小結： DEFVAR_XXX
+共 738 個
+** def! / set / setq
 ** if
 *** mal implementation
 [[bookmark:case%20"if":][Bookmark: case "if":]]

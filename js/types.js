@@ -12,8 +12,8 @@ function _obj_type(obj) {
     else if (_vector_Q(obj)) {   return 'vector'; }
     else if (_hash_map_Q(obj)) { return 'hash-map'; }
     else if (_nil_Q(obj)) {      return 'nil'; }
-    else if (_true_Q(obj)) {     return 'true'; }
-    else if (_false_Q(obj)) {    return 'false'; }
+    else if (_true_Q(obj)) {     return 't'; }
+    else if (_false_Q(obj)) {    return 'nil'; }
     else if (_atom_Q(obj)) {     return 'atom'; }
     else {
         switch (typeof(obj)) {

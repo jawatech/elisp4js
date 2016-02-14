@@ -172,7 +172,7 @@ var rep = function(str) { return PRINT(EVAL(READ(str), repl_env)); };
 for (var n in core.ns) { repl_env.set(types._symbol(n), core.ns[n]); }
 repl_env.set(types._symbol('eval'), function(ast) {
     return EVAL(ast, repl_env); });
-repl_env.set(types._symbol('*ARGV*'), []);
+repl_env.set(types._symbol('command-line-args'), []);
 
 // core.mal: defined using the language itself
 rep("(def! *host-language* \"javascript\")")
@@ -183,8 +183,8 @@ rep("(def! *gensym-counter* (atom 0))");
 rep("(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))");
 rep("(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* (condvar (gensym)) `(let* (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))");
 
-if (typeof process !== 'undefined' && process.argv.length > 2) {
-    repl_env.set(types._symbol('*ARGV*'), process.argv.slice(3));
+if (typeof process !== 'undefined') {// && process.argv.length > 2) {
+    repl_env.set(types._symbol('command-line-args'), process.argv); //.slice(3));
     rep('(load-file "' + process.argv[2] + '")');
     process.exit(0);
 }
