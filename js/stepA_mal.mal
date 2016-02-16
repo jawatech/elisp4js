@@ -1,5 +1,6 @@
 ;; Testing basic bash interop
-
+(let* ((a 1) ) a)
+;=>1
 (js* "7")
 ;=>7
 (if (or (equal (nth 3 command-line-args) "bootstrap")

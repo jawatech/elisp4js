@@ -7,7 +7,8 @@
     var core = require('./core');
     var interop = require('./interop');
 }
-
+// debug
+var debug = false;
 // read
 function READ(str) {
     return reader.read_str(str);
@@ -71,8 +72,7 @@ function eval_ast(ast, env) {
 
 function _EVAL(ast, env) {
     while (true) {
-
-    //printer.println("EVAL:", printer._pr_str(ast, true));
+    if (debug) printer.println("EVAL:", printer._pr_str(ast, true));
     if (!types._list_Q(ast)) {
         return eval_ast(ast, env);
     }
@@ -90,10 +90,50 @@ function _EVAL(ast, env) {
         return env.set(a1, res);
     case "let*":
         var let_env = new Env(env);
-        for (var i=0; i < a1.length; i+=2) {
-            let_env.set(a1[i], EVAL(a1[i+1], let_env));
+        for (var i=0; i < a1.length; i++) {
+            var ota = types._obj_type(a1[i]);
+            switch (ota) {
+                case 'symbol': 
+                    let_env.set(a1[i], null);
+                case 'list':
+                    let_env.set(a1[i][0], EVAL(a1[i][1], let_env));
+                default:
+                    printer.println(ota+' : '+printer._pr_str(a1[i],true));
+            }
         }
-        ast = a2;
+        for (var i=2; i < ast.length-1; i++) {
+            ast[i]=eval_ast(ast[i], let_env);
+        }
+        ast = ast.length>2 ? ast[ast.length-1] : null;
+        env = let_env;
+        break;
+    case "let":
+        var let_env = env;
+        var temp= [];
+        for (var i=0; i < a1.length; i++) {
+            var ota = types._obj_type(a1[i]);
+            switch (ota) {
+                case 'symbol': 
+                    temp.push(null);
+                case 'list':
+                    temp.push(EVAL(a1[i][1], let_env));
+                default:
+            }
+        }
+        for (var i=0; i < a1.length; i++) {
+            var ota = types._obj_type(a1[i]);
+            switch (ota) {
+                case 'symbol': 
+                    let_env.set(a1[i], null);
+                case 'list':
+                    let_env.set(a1[i][0], temp[i]);
+                default:
+            }
+        }
+        for (var i=2; i < ast.length-1; i++) {
+            ast[i]=EVAL(ast[i], let_env);
+        }
+        ast = ast.length>2 ? ast[ast.length-1] : null;
         env = let_env;
         break;
     case "quote":
@@ -142,6 +182,7 @@ function _EVAL(ast, env) {
     case "fn*":
         return types._function(EVAL, Env, a2, env, a1);
     default:
+        if (debug) printer.println(' : '+printer._pr_str(ast,true));
         var el = eval_ast(ast, env), f = el[0];
         if (f.__ast__) {
             ast = f.__ast__;
@@ -155,6 +196,9 @@ function _EVAL(ast, env) {
 }
 
 function EVAL(ast, env) {
+    if (debug) printer.println(' : '+printer._pr_str(ast,true));
+    if (debug) console.log("DEBUG: ", ast);
+
     var result = _EVAL(ast, env);
     return (typeof result !== "undefined") ? result : null;
 }
@@ -181,9 +225,9 @@ rep("(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\"))
 rep("(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
 rep("(def! *gensym-counter* (atom 0))");
 rep("(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))");
-rep("(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* (condvar (gensym)) `(let* (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))");
+rep("(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* ((condvar (gensym))) `(let* ((~condvar ~(first xs))) (if ~condvar ~condvar (or ~@(rest xs))))) ))))");
 
-if (typeof process !== 'undefined') {// && process.argv.length > 2) {
+if (typeof process !== 'undefined' && process.argv.length > 2) {
     repl_env.set(types._symbol('command-line-args'), process.argv); //.slice(3));
     rep('(load-file "' + process.argv[2] + '")');
     process.exit(0);

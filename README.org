@@ -536,6 +536,14 @@ DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料
 Note that there are plenty of ways to make (GLOBAL) bindings: ‘defconst’, ‘defun’, ‘defvar’, 'let', ‘flet’, ‘labels’, ‘prog’, etc.
 
 根據 [[https://www.emacswiki.org/emacs/DynamicBindingVsLexicalBinding][此文]] , emacs 只有 dynamic binding ，也就是說所有符號共用一個資料結構來存放 ， 使得內層的函數/迴圈可以影響外層符號，不管這個符號背後是變數或函數。
+
+根據這樣的邏輯，dynamic binding (ie emacs lisp) 在局部變數宣告時， 會先查找環境是否有同名的符號，若然則直接使用它，不在自己的 scope 再定義自己的符號； lexical binding (scheme?) 則無論如何都直接在自己的環境中， 為局部變數定義符號，並且優先查找。
+
+let* 與 let 的不同之處在於，let 的 value 會在與 key 作 binding 前先求值， 因此當 local / global 有同名變數時， 會優先取 global 的值。
+
+更精確的來說， let 會比 let* 多一個迴圈，先對所有的 value 進行 eval 
+*** specbind
+
 *** emacs implementation
 **** DEFVAR
 ***** DEFVAR_LISP @ lread.c
