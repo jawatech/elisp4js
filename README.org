@@ -3,11 +3,11 @@
 
 * synopsis
 #+BEGIN_SRC sh
-node js/stepA_mal.js js/tests/stepA_mal.mal   # original mal test; will work unconditionally
-node js/temacs-24.5.js js/stepA_mal.mal       # continuously incoporating loadup gradually
+
+node js/temacs-24.5.js js/loadup_1.el         # first list; working!!
 node js/temacs-24.5.js js/loadup.el           # benchmark; shall work finally
 #+END_SRC 
-此一指令將載入 emacs 預載的 loadup.el 並進行 sanity check ，驗證 temacs 的完成度。
+以上指令將載入 emacs 預載的 loadup.el 並進行 sanity check ，驗證 temacs 的完成度。
 
 接下來的工作，將分為兩個方向進行。 從 mal 方找尋 emacs 方的對應元素，以及從 emacs 的執行期行為找尋對應的程式以決定實作的優先順序。
 
