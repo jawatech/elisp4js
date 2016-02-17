@@ -235,6 +235,117 @@ initial_obarray 是最初始的物件陣列，包含了最開始的三個常量�
 	       doc: /* Args passed by shell to Emacs, as a list of strings.
 Many arguments are deleted from the list as they are processed.  */);
 
+DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料，作用比較單純
+
+**** DEFVAR
+***** DEFVAR_LISP @ lread.c
+  [[bookmark:DEFVAR_LISP%20("command-line-args",%20Vcommand_line_args,][Bookmark: DEFVAR_LISP ("command-line-args", Vcommand_line_args,]]
+
+  [[bookmark:#define%20DEFVAR_LISP(lname,%20vname,%20doc)][Bookmark: #define DEFVAR_LISP(lname, vname, doc)]]
+
+  /* Macros we use to define forwarded Lisp variables.
+     These are used in the syms_of_FILENAME functions.
+
+     An ordinary (not in buffer_defaults, per-buffer, or per-keyboard)
+     lisp variable is actually a field in `struct emacs_globals'.  The
+     field's name begins with "f_", which is a convention enforced by
+     these macros.  Each such global has a corresponding #define in
+     globals.h; the plain name should be used in the code.
+
+     E.g., the global "cons_cells_consed" is declared as "int
+     f_cons_cells_consed" in globals.h, but there is a define:
+
+	#define cons_cells_consed globals.f_cons_cells_consed
+
+     All C code uses the `cons_cells_consed' name.  This is all done
+     this way to support indirection for multi-threaded Emacs.  */
+
+  #define DEFVAR_LISP(lname, vname, doc)		\
+    do {						\
+      static struct Lisp_Objfwd o_fwd;		\
+      defvar_lisp (&o_fwd, lname, &globals.f_ ## vname);		\
+    } while (false)
+
+  在執行最開始的 make 的過程中，所有 DEFVAR 的 vname 會被收集到 globals.h 當中， 成為 emacs_globasl 的一個欄位， 名稱會加上前綴 f_ , 然後又被巨集宣告為與 lname 同名的變數。
+***** defvar_lisp @ lread.c
+  由以下程式碼可看出，這些變數會存到 staticvec 這個陣列中， 這個部分與 gargabe collection 有關， 在此不詳述。 與 defsubr 的作法類似， 此變數的名稱會被註冊為一符號，並以 obarray 存放，方便以變數名查詢符號。 符號再經 SET_SYMBOL_FWD 存放此一變數的指標。
+
+  [[bookmark:defvar_lisp%20(struct%20Lisp_Objfwd%20*o_fwd,][Bookmark: defvar_lisp (struct Lisp_Objfwd *o_fwd,]]
+
+  /* Similar but define a variable whose value is the Lisp Object stored
+     at address.  Two versions: with and without gc-marking of the C
+     variable.  The nopro version is used when that variable will be
+     gc-marked for some other reason, since marking the same slot twice
+     can cause trouble with strings.  */
+  void
+  defvar_lisp_nopro (struct Lisp_Objfwd *o_fwd,
+		     const char *namestring, Lisp_Object *address)
+  {
+    Lisp_Object sym;
+    sym = intern_c_string (namestring);
+    o_fwd->type = Lisp_Fwd_Obj;
+    o_fwd->objvar = address;
+    XSYMBOL (sym)->declared_special = 1;
+    XSYMBOL (sym)->redirect = SYMBOL_FORWARDED;
+    SET_SYMBOL_FWD (XSYMBOL (sym), (union Lisp_Fwd *)o_fwd);
+  }
+
+  void
+  defvar_lisp (struct Lisp_Objfwd *o_fwd,
+	       const char *namestring, Lisp_Object *address)
+  {
+    defvar_lisp_nopro (o_fwd, namestring, address);
+    staticpro (address);
+  }
+***** staticpro: garbage collection
+  [[bookmark:staticpro%20(Lisp_Object%20*varaddress)][Bookmark: staticpro (Lisp_Object *varaddress)]]
+
+  /***********************************************************************
+			    Protection from GC
+   ***********************************************************************/
+
+  /* Put an entry in staticvec, pointing at the variable with address
+     VARADDRESS.  */
+
+  void
+  staticpro (Lisp_Object *varaddress)
+  {
+    if (staticidx >= NSTATICS)
+      fatal ("NSTATICS too small; try increasing and recompiling Emacs.");
+    staticvec[staticidx++] = varaddress;
+  }
+***** SET_SYMBOL_FWD
+ [[bookmark:SET_SYMBOL_FWD%20(struct%20Lisp_Symbol%20*sym,%20union%20Lisp_Fwd%20*v)][Bookmark: SET_SYMBOL_FWD (struct Lisp_Symbol *sym, union Lisp_Fwd *v)]]
+
+ INLINE void
+ SET_SYMBOL_FWD (struct Lisp_Symbol *sym, union Lisp_Fwd *v)
+ {
+   eassert (sym->redirect == SYMBOL_FORWARDED);
+   sym->val.fwd = v;
+ }
+***** SYMBOL_FORWARDED 影響到的函數
+****** specbind
+ 特重要！！！ lisp 中的這些函數也需要它： let, 以及因為實質上使用了 let 而以 C 改寫的函數
+****** 其它
+******* buffer_local_value_1
+  /* Return the value of VARIABLE in BUFFER.
+  If VARIABLE does not have a buffer-local binding in BUFFER, the value
+  is the default binding of the variable. */
+******* store_frame_param
+******* mark_object
+
+***** staticvec: 與 GC 有關，不重要
+
+**** 兼論 expand-file-name
+[[bookmark:EMACSLOADPATH=$(CURDIR)/../lisp][Bookmark: EMACSLOADPATH=$(CURDIR)/../lisp]]
+
+DEFUN ("expand-file-name", Fexpand_file_name, Sexpand_file_name, 1, 2, 0,
+
+
+
+
+
+**** 小結： 復刻 emacs 初始化行為
 *** C / Lisp 兩用函數的宣告/定義及登錄： DEFUN (& defsubr) @syms_of_XXX（）
 以 if 這個函數來作為範例，它的宣告/定義是 DEFUN ("if", Fif, Sif, 2, UNEVALLED, 0 …
 
@@ -508,9 +619,15 @@ it defaults to the value of `Vobarray'.  */
 
 ** repl_env => Vobarray
 mal 在初始化的過程中，把 core.ns 的內容複製到了 repl_env 當中，因此 repl_env 才是真正意義上存放所有 symboe 的物件，core.ns 則類似於 initial_obarray
-** eval
+** equal
 嘗試載入 loadup.el 的過程中，第一個遇到的問題就是找不到這個算子。這個問題倒是好解決，因為 mal 本身已經定義了 "=" 算子；不過這倒是提供我們再一次審視 scanning / parsing 的流程
 
+*** emacs implementation
+fns.c  中有如下定義：
+
+[[bookmark:DEFUN%20("equal",%20Fequal,%20Sequal,%202,%202,%200,][Bookmark: DEFUN ("equal", Fequal, Sequal, 2, 2, 0,]]
+
+[[bookmark:%20%20defsubr%20(&Sequal);][Bookmark:   defsubr (&Sequal);]]
 *** mal implementation
 core.js 中有如下定義：
 
@@ -523,15 +640,8 @@ stepA_mal.js 中有如下定義：
 [[bookmark:for%20(var%20n%20in%20core.ns)%20{%20repl_env.set(types._symbol(n),%20core.ns%5Bn%5D);%20}][Bookmark: for (var n in core.ns) { repl_env.set(types._symbol(n), core.ns{n}); }]]
 
 ns 的資料再被逐筆的複製到 repl_env 中
-*** emacs implementation
-fns.c  中有如下定義：
-
-[[bookmark:DEFUN%20("equal",%20Fequal,%20Sequal,%202,%202,%200,][Bookmark: DEFUN ("equal", Fequal, Sequal, 2, 2, 0,]]
-
-[[bookmark:%20%20defsubr%20(&Sequal);][Bookmark:   defsubr (&Sequal);]]
 *** 小結:  DEFUN/defsubr -> core.ns
-** let* / DEFVAR / let
-DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料，作用比較單純
+** let* / let 
 
 Note that there are plenty of ways to make (GLOBAL) bindings: ‘defconst’, ‘defun’, ‘defvar’, 'let', ‘flet’, ‘labels’, ‘prog’, etc.
 
@@ -541,127 +651,37 @@ Note that there are plenty of ways to make (GLOBAL) bindings: ‘defconst’, �
 
 let* 與 let 的不同之處在於，let 的 value 會在與 key 作 binding 前先求值， 因此當 local / global 有同名變數時， 會優先取 global 的值。
 
-更精確的來說， let 會比 let* 多一個迴圈，先對所有的 value 進行 eval 
-*** specbind
+更精確的來說， let 會比 let* 多一個迴圈，先對所有的 value 進行 eval ； 後面的部分就都差不多
 
-*** emacs implementation
-**** DEFVAR
-***** DEFVAR_LISP @ lread.c
-  [[bookmark:DEFVAR_LISP%20("command-line-args",%20Vcommand_line_args,][Bookmark: DEFVAR_LISP ("command-line-args", Vcommand_line_args,]]
-
-  [[bookmark:#define%20DEFVAR_LISP(lname,%20vname,%20doc)][Bookmark: #define DEFVAR_LISP(lname, vname, doc)]]
-
-  /* Macros we use to define forwarded Lisp variables.
-     These are used in the syms_of_FILENAME functions.
-
-     An ordinary (not in buffer_defaults, per-buffer, or per-keyboard)
-     lisp variable is actually a field in `struct emacs_globals'.  The
-     field's name begins with "f_", which is a convention enforced by
-     these macros.  Each such global has a corresponding #define in
-     globals.h; the plain name should be used in the code.
-
-     E.g., the global "cons_cells_consed" is declared as "int
-     f_cons_cells_consed" in globals.h, but there is a define:
-
-	#define cons_cells_consed globals.f_cons_cells_consed
-
-     All C code uses the `cons_cells_consed' name.  This is all done
-     this way to support indirection for multi-threaded Emacs.  */
-
-  #define DEFVAR_LISP(lname, vname, doc)		\
-    do {						\
-      static struct Lisp_Objfwd o_fwd;		\
-      defvar_lisp (&o_fwd, lname, &globals.f_ ## vname);		\
-    } while (false)
-
-  在執行最開始的 make 的過程中，所有 DEFVAR 的 vname 會被收集到 globals.h 當中， 成為 emacs_globasl 的一個欄位， 名稱會加上前綴 f_ , 然後又被巨集宣告為與 lname 同名的變數。
-***** defvar_lisp @ lread.c
-  由以下程式碼可看出，這些變數會存到 staticvec 這個陣列中。 與 defsubr 的作法類似， 此變數的名稱會被註冊為一符號，並以 obarray 存放，方便以變數名查詢符號。 符號再經 SET_SYMBOL_FWD 存放此一變數的指標。
-
-  [[bookmark:defvar_lisp%20(struct%20Lisp_Objfwd%20*o_fwd,][Bookmark: defvar_lisp (struct Lisp_Objfwd *o_fwd,]]
-
-  /* Similar but define a variable whose value is the Lisp Object stored
-     at address.  Two versions: with and without gc-marking of the C
-     variable.  The nopro version is used when that variable will be
-     gc-marked for some other reason, since marking the same slot twice
-     can cause trouble with strings.  */
-  void
-  defvar_lisp_nopro (struct Lisp_Objfwd *o_fwd,
-		     const char *namestring, Lisp_Object *address)
-  {
-    Lisp_Object sym;
-    sym = intern_c_string (namestring);
-    o_fwd->type = Lisp_Fwd_Obj;
-    o_fwd->objvar = address;
-    XSYMBOL (sym)->declared_special = 1;
-    XSYMBOL (sym)->redirect = SYMBOL_FORWARDED;
-    SET_SYMBOL_FWD (XSYMBOL (sym), (union Lisp_Fwd *)o_fwd);
-  }
-
-  void
-  defvar_lisp (struct Lisp_Objfwd *o_fwd,
-	       const char *namestring, Lisp_Object *address)
-  {
-    defvar_lisp_nopro (o_fwd, namestring, address);
-    staticpro (address);
-  }
-***** staticpro: garbage collection
-  [[bookmark:staticpro%20(Lisp_Object%20*varaddress)][Bookmark: staticpro (Lisp_Object *varaddress)]]
-
-  /***********************************************************************
-			    Protection from GC
-   ***********************************************************************/
-
-  /* Put an entry in staticvec, pointing at the variable with address
-     VARADDRESS.  */
-
-  void
-  staticpro (Lisp_Object *varaddress)
-  {
-    if (staticidx >= NSTATICS)
-      fatal ("NSTATICS too small; try increasing and recompiling Emacs.");
-    staticvec[staticidx++] = varaddress;
-  }
-***** SET_SYMBOL_FWD
- [[bookmark:SET_SYMBOL_FWD%20(struct%20Lisp_Symbol%20*sym,%20union%20Lisp_Fwd%20*v)][Bookmark: SET_SYMBOL_FWD (struct Lisp_Symbol *sym, union Lisp_Fwd *v)]]
-
- INLINE void
- SET_SYMBOL_FWD (struct Lisp_Symbol *sym, union Lisp_Fwd *v)
- {
-   eassert (sym->redirect == SYMBOL_FORWARDED);
-   sym->val.fwd = v;
- }
-***** SYMBOL_FORWARDED 影響到的函數
-****** specbind
- 特重要！！！ lisp 中的這些函數也需要它： let, 以及因為實質上使用了 let 而以 C 改寫的函數
-****** 其它
-******* buffer_local_value_1
-  /* Return the value of VARIABLE in BUFFER.
-  If VARIABLE does not have a buffer-local binding in BUFFER, the value
-  is the default binding of the variable. */
-******* store_frame_param
-******* mark_object
-
-***** staticvec: 與 GC 有關，不重要
+*** emacs: 
+**** let*
+[[bookmark:DEFUN%20("let*",%20FletX,%20SletX,%201,%20UNEVALLED,%200,][Bookmark: DEFUN ("let*", FletX, SletX, 1, UNEVALLED, 0,]]
 
 **** let
+[[bookmark:DEFUN%20("let",%20Flet,%20Slet,%201,%20UNEVALLED,%200,][Bookmark: DEFUN ("let", Flet, Slet, 1, UNEVALLED, 0,]]
 
-
-*** mal: let* / def!
+*** mal: 
 最外層的環境為 repl_env ，也就是 DEFUN / DEFVAR / DEFCONST 的作用域
 
 
-*** 小結： DEFVAR_XXX
-共 738 個
-** def! / set / setq
-** if
-*** mal implementation
-[[bookmark:case%20"if":][Bookmark: case "if":]]
-*** emacs implementation
-[[bookmark:DEFUN%20("if",%20Fif,%20Sif,%202,%20UNEVALLED,%200,][Bookmark: DEFUN ("if", Fif, Sif, 2, UNEVALLED, 0,]]
+*** 小結： DEFVAR => init_XXXX
+共 738 個， 其初始化常發生在 init_XXXX 函數中，必需忠實呈現在 js 端
+** load-path 的初始化
+*** emacs
+[[bookmark:init_lread%20(void)][Bookmark: init_lread (void)]]
 
-[[bookmark:defsubr%20(&Sif);][Bookmark: defsubr (&Sif);]]
+Vpurify_flag 在 loadup.el 執行期間，其值為真； EMACSLOADPATH 則通常未指定，暫時忽略它
+
+[[bookmark:load_path_default%20(void)][Bookmark: load_path_default (void)]]
+
+[[bookmark:EMACSLOADPATH=$(CURDIR)/../lisp][Bookmark: EMACSLOADPATH=$(CURDIR)/../lisp]]
+
+因此目前暫時將此變數初始化為 ../lisp
+*** mal
+
+
 ** or
+這部分 mal 有實作，而且是以 self-hosting 的方式，省下寫 js 的工夫
 *** mal implementation
 [[bookmark:case%20"or":][Bookmark: case "or":]]
 
@@ -670,6 +690,14 @@ let* 與 let 的不同之處在於，let 的 value 會在與 key 作 binding 前
  [[bookmark:DEFUN%20("or",%20For,%20Sor,%200,%20UNEVALLED,%200,][Bookmark: DEFUN ("or", For, Sor, 0, UNEVALLED, 0,]]
 
  [[bookmark:defsubr%20(&Sor);][Bookmark: defsubr (&Sor);]]
+** def! / set / setq
+** if
+*** mal implementation
+[[bookmark:case%20"if":][Bookmark: case "if":]]
+*** emacs implementation
+[[bookmark:DEFUN%20("if",%20Fif,%20Sif,%202,%20UNEVALLED,%200,][Bookmark: DEFUN ("if", Fif, Sif, 2, UNEVALLED, 0,]]
+
+[[bookmark:defsubr%20(&Sif);][Bookmark: defsubr (&Sif);]]
 
 ** macroexpand
 macroexpand 是一個特殊的算子

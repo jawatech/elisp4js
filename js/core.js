@@ -3,7 +3,8 @@ var core = {};
 if (typeof module === 'undefined') {
     var exports = core;
 } else {
-    var types = require('./types'),
+    var path = require('path'),
+        types = require('./types'),
         readline = require('./node_readline'),
         reader = require('./reader'),
         printer = require('./printer');
@@ -158,6 +159,9 @@ function swap_BANG(atm, f) {
     atm.val = f.apply(f, args);
     return atm.val;
 }
+// eval.c
+
+// fileio.c
 
 
 // types.ns is namespace of type functions
@@ -173,6 +177,8 @@ var ns = {'type': types._obj_type,
           'keyword': types._keyword,
           'keyword?': types._keyword_Q,
           'fboundp': types._function_Q,
+
+          'expand-file-name': function(a,b){return path.resolve(a,b);},
 
           'pr-str': pr_str,
           'str': str,

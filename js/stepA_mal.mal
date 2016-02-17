@@ -20,7 +20,7 @@
 			    (expand-file-name "international" dir)
 			    (expand-file-name "textmodes" dir)
 			    (expand-file-name "vc" dir)))))
-(eval top-level)
+;(eval top-level)
 
 (js* "'7'")
 ;=>"7"
