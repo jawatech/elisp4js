@@ -1,8 +1,12 @@
+
+#+AUTHOR: Sigmund Tzeng
+
 * synopsis
+#+BEGIN_SRC sh
 node js/stepA_mal.js js/tests/stepA_mal.mal   # original mal test; will work unconditionally
 node js/temacs-24.5.js js/stepA_mal.mal       # continuously incoporating loadup gradually
 node js/temacs-24.5.js js/loadup.el           # benchmark; shall work finally
-
+#+END_SRC 
 此一指令將載入 emacs 預載的 loadup.el 並進行 sanity check ，驗證 temacs 的完成度。
 
 接下來的工作，將分為兩個方向進行。 從 mal 方找尋 emacs 方的對應元素，以及從 emacs 的執行期行為找尋對應的程式以決定實作的優先順序。
@@ -431,7 +435,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Symbols.html#
 [[bookmark:eval_sub%20(Lisp_Object%20form)][Bookmark: eval_sub (Lisp_Object form)]]
 
 此處呼叫了 list 的函數以進行求值
-
+#+BEGIN_SRC C
 	  switch (i)
 	    {
 	    case 0:
@@ -480,7 +484,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Symbols.html#
 		 cases to this switch.  */
 	      emacs_abort ();
 	    }
-
+#+END_SRC
 ***** Fload(): Execute a file of Lisp code named FILE.
 Fload() 雖然不是初級的語法元素，但是了解它的流程對測試有相當的幫助，因此以下說明它的執行流程
 
@@ -706,11 +710,14 @@ mal 實作如下：
 
 [[bookmark:mal/macroexpand][mal/macroexpand]]
 
+#+BEGIN_SRC C
     case 'macroexpand':
         return macroexpand(a1, env);
+#+END_SRC 
 
 [[bookmark:mal/function%20macroexpand][mal/function macroexpand]]
 
+#+BEGIN_SRC C
 function macroexpand(ast, env) {
     while (is_macro_call(ast, env)) {
         var mac = env.get(ast[0]);
@@ -718,11 +725,13 @@ function macroexpand(ast, env) {
     }
     return ast;
 }
+#+END_SRC 
 
 emacs 的實作如下：
 
 [[bookmark:eval/macroexpand][Bookmark: eval/macroexpand]]
 
+#+BEGIN_SRC C
 DEFUN ("macroexpand", Fmacroexpand, Smacroexpand, 1, 2, 0,
        doc: /* Return result of expanding macros at top level of FORM.
 If FORM is not a macro call, it is returned unchanged.
@@ -793,6 +802,7 @@ definitions to shadow the loaded ones for use in file byte-compilation.  */)
     }
   return form;
 }
+#+END_SRC
 
 ** try*/catch*
 catch 是一個特殊的算子， mal 中使用另一個名字： try*/catch*
@@ -801,6 +811,7 @@ mal 實作如下：
 
 [[bookmark:try%20in%20mal][Bookmark: try in mal]]
 
+#+BEGIN_SRC C
     case "try*":
         try {
             return EVAL(a1, env);
@@ -812,11 +823,13 @@ mal 實作如下：
                 throw exc;
             }
         }
+#+END_SRC
 
 emacs 的實作如下：
 
 [[bookmark:eval.c/catch][Bookmark: eval.c/catch]]
 
+#+BEGIN_SRC C
 DEFUN ("catch", Fcatch, Scatch, 1, UNEVALLED, 0,
        doc: /* Eval BODY allowing nonlocal exits using `throw'.
 TAG is evalled to get the tag to use; it must not be nil.
@@ -836,6 +849,7 @@ usage: (catch TAG BODY...)  */)
   UNGCPRO;
   return internal_catch (tag, Fprogn, XCDR (args));
 }
+#+END_SRC
 
 * 推估應預載模組
 (load "emacs-lisp/byte-run")

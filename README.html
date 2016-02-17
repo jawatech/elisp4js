@@ -1,0 +1,1595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2016-02-17 Wed 18:00 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="viewport" content="width=device-width, initial-scale=1" />
+<title></title>
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Sigmund Tzeng" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgheadline1">1. synopsis</a></li>
+<li><a href="#orgheadline64">2. 從 emacs 的執行期行為找尋對應的程式碼</a>
+<ul>
+<li><a href="#orgheadline6">2.1. building</a>
+<ul>
+<li><a href="#orgheadline2">2.1.1. bare emacs: Emacs Lisp interpreter and I/O routines</a></li>
+<li><a href="#orgheadline4">2.1.2. dumped (pure) Emacs: set up the normal Emacs editing environment</a></li>
+<li><a href="#orgheadline5">2.1.3. daily emacs, finally</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline63">2.2. running</a>
+<ul>
+<li><a href="#orgheadline34">2.2.1. 初始化@main()@emacs.c: initXXX &amp; syms<sub>of</sub><sub>XXX</sub> (defsubr, DEFVAR &amp; DEFSYM)</a></li>
+<li><a href="#orgheadline39">2.2.2. C / Lisp 兩用函數的宣告/定義及登錄： DEFUN (&amp; defsubr) @syms<sub>of</sub><sub>XXX</sub>（）</a></li>
+<li><a href="#orgheadline42">2.2.3. 為何沒有DEFCONST?DEFSYM的作用？</a></li>
+<li><a href="#orgheadline62">2.2.4. REPL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline88">3. 從 mal 方找尋 emacs 方的對應元素</a>
+<ul>
+<li><a href="#orgheadline65">3.1. repl<sub>env</sub> =&gt; Vobarray</a></li>
+<li><a href="#orgheadline69">3.2. equal</a>
+<ul>
+<li><a href="#orgheadline66">3.2.1. emacs implementation</a></li>
+<li><a href="#orgheadline67">3.2.2. mal implementation</a></li>
+<li><a href="#orgheadline68">3.2.3. 小結:  DEFUN/defsubr -&gt; core.ns</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline75">3.3. let* / let</a>
+<ul>
+<li><a href="#orgheadline72">3.3.1. emacs:</a></li>
+<li><a href="#orgheadline73">3.3.2. mal:</a></li>
+<li><a href="#orgheadline74">3.3.3. 小結： DEFVAR =&gt; init<sub>XXXX</sub></a></li>
+</ul>
+</li>
+<li><a href="#orgheadline78">3.4. load-path 的初始化</a>
+<ul>
+<li><a href="#orgheadline76">3.4.1. emacs</a></li>
+<li><a href="#orgheadline77">3.4.2. mal</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline81">3.5. or</a>
+<ul>
+<li><a href="#orgheadline79">3.5.1. mal implementation</a></li>
+<li><a href="#orgheadline80">3.5.2. emacs implementation</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline82">3.6. def! / set / setq</a></li>
+<li><a href="#orgheadline85">3.7. if</a>
+<ul>
+<li><a href="#orgheadline83">3.7.1. mal implementation</a></li>
+<li><a href="#orgheadline84">3.7.2. emacs implementation</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline86">3.8. macroexpand</a></li>
+<li><a href="#orgheadline87">3.9. try*/catch*</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline89">4. 推估應預載模組</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"><span class="section-number-2">1</span> synopsis</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+
+<pre class="src src-sh">node js/stepA_mal.js js/tests/stepA_mal.mal   # original mal test; will work unconditionally
+node js/temacs-24.5.js js/stepA_mal.mal       # continuously incoporating loadup gradually
+node js/temacs-24.5.js js/loadup.el           # benchmark; shall work finally
+</pre>
+</div>
+<p>
+此一指令將載入 emacs 預載的 loadup.el 並進行 sanity check ，驗證 temacs 的完成度。
+</p>
+
+<p>
+接下來的工作，將分為兩個方向進行。 從 mal 方找尋 emacs 方的對應元素，以及從 emacs 的執行期行為找尋對應的程式以決定實作的優先順序。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline64" class="outline-2">
+<h2 id="orgheadline64"><span class="section-number-2">2</span> 從 emacs 的執行期行為找尋對應的程式碼</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+程式執行開頭頭有顯示一個 splash 畫面，我們將從此畫面的元素著手，得到初始載入順序相關資訊。
+</p>
+
+<p>
+startup.el 是第一個被載入執行的 lisp 檔案。 經分析後發現此一行為由 Makefile.in 所指定。
+</p>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-3">
+<h3 id="orgheadline6"><span class="section-number-3">2.1</span> building</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-orgheadline2" class="outline-4">
+<h4 id="orgheadline2"><span class="section-number-4">2.1.1</span> bare emacs: Emacs Lisp interpreter and I/O routines</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+<a href="temacs">Bookmark: temacs</a>
+</p>
+
+<p>
+在建置 emacs 的過程中，第一步為產生此一空殼 temacs 
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-4">
+<h4 id="orgheadline4"><span class="section-number-4">2.1.2</span> dumped (pure) Emacs: set up the normal Emacs editing environment</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+<a href="dumped%20Emacs">Bookmark: dumped Emacs</a>
+</p>
+
+<p>
+c.f. 末傾印，只進行 "拔靴法(Bootstrap)" 
+<a href="bootstrap-emacs">Bookmark: bootstrap-emacs</a>
+</p>
+
+<p>
+在建置 emacs 的過程中，第二步為產生此一 "dumped Emacs" 的預載映象檔；其 &#x2013;load 參數指定了 loadup.el 這個預載檔案；其中 loadup.el 會再指定預載檔案
+</p>
+</div>
+<ol class="org-ol"><li><a id="orgheadline3"></a>load "startup"<br  /><div class="outline-text-5" id="text-2-1-2-1">
+<p>
+<a href="load%20"startup"">Bookmark: load "startup"</a>
+</p>
+
+<p>
+在此檔末端並指定執行 startup.el 中的 top-level 函數，也就是 normal-top-level。 
+</p>
+
+<p>
+startup.el 有特定的字串，似乎與視窗介面的建立有關。
+</p>
+
+<p>
+其它載入檔案如下：
+</p>
+
+<p>
+(load "emacs-lisp/byte-run")
+(load "emacs-lisp/backquote")
+(load "subr")
+(load "version")
+(load "widget")
+(load "custom")
+(load "emacs-lisp/map-ynp")
+(load "international/mule")
+(load "international/mule-conf")
+(load "env")
+(load "format")
+(load "bindings")
+(load "cus-start")
+(load "window")  ; Needed here for `replace-buffer-in-windows'.
+(load "files")
+(load "emacs-lisp/macroexp")
+    (load "emacs-lisp/pcase"))
+  (load "emacs-lisp/macroexp"))
+(load "cus-face")
+(load "faces")  ; after here, `defface' may be used.
+(load "button")
+</p>
+
+<p>
+(load "startup")
+</p>
+
+<p>
+    (load "loaddefs.el")
+  (file-error (load "ldefs-boot.el")))
+(load "emacs-lisp/nadvice")
+(load "minibuffer")
+(load "abbrev")         ;lisp-mode.el and simple.el use define-abbrev-table.
+(load "simple")
+(load "help")
+(load "jka-cmpr-hook")
+(load "epa-hook")
+(load "international/mule-cmds")
+(load "case-table")
+(load "international/charprop.el" t)
+(load "international/characters")
+(load "composite")
+(load "language/chinese")
+(load "language/cyrillic")
+(load "language/indian")
+(load "language/sinhala")
+(load "language/english")
+(load "language/ethiopic")
+(load "language/european")
+(load "language/czech")
+(load "language/slovak")
+(load "language/romanian")
+(load "language/greek")
+(load "language/hebrew")
+(load "language/japanese")
+(load "language/korean")
+(load "language/lao")
+(load "language/tai-viet")
+(load "language/thai")
+(load "language/tibetan")
+(load "language/vietnamese")
+(load "language/misc-lang")
+(load "language/utf-8-lang")
+(load "language/georgian")
+(load "language/khmer")
+(load "language/burmese")
+(load "language/cham")
+(load "indent")
+(load "frame")
+(load "term/tty-colors")
+(load "font-core")
+(load "facemenu")
+(load "emacs-lisp/syntax")
+(load "font-lock")
+(load "jit-lock")
+      (load "mouse")
+           (load "scroll-bar"))
+      (load "select")))
+(load "emacs-lisp/timer")
+(load "isearch")
+(load "rfn-eshadow")
+(load "menu-bar")
+(load "emacs-lisp/lisp")
+(load "textmodes/page")
+(load "register")
+(load "textmodes/paragraphs")
+(load "progmodes/prog-mode")
+(load "emacs-lisp/lisp-mode")
+(load "textmodes/text-mode")
+(load "textmodes/fill")
+(load "newcomment")
+(load "replace")
+(load "emacs-lisp/tabulated-list")
+(load "buff-menu")
+      (load "fringe")
+      (load "emacs-lisp/regexp-opt")
+      (load "image")
+      (load "international/fontset")
+      (load "dnd")
+      (load "tool-bar")))
+    (load "dynamic-setting"))
+      (load "x-dnd")
+      (load "term/common-win")
+      (load "term/x-win")))
+      (load "term/common-win")
+      (load "w32-vars")
+      (load "term/w32-win")
+      (load "disp-table")
+      (load "w32-common-fns")
+        (load "w32-fns")
+        (load "ls-lisp")
+        (load "dos-w32"))))
+      (load "dos-w32")
+      (load "dos-fns")
+      (load "dos-vars")
+      (load "term/internal")
+      (load "term/pc-win")
+      (load "ls-lisp")
+      (load "disp-table"))) ; needed to setup ibm-pc char set, see internal.el
+      (load "term/common-win")
+      (load "term/ns-win")))
+    (load "mwheel"))
+(load "emacs-lisp/float-sup")
+(load "vc/vc-hooks")
+(load "vc/ediff-hook")
+(load "uniquify")
+(load "electric")
+(if (not (eq system-type 'ms-dos)) (load "tooltip"))
+(load "leim/leim-list.el" t)
+  (load "site-load" t)
+  (load "site-init" t)
+</p>
+</div></li></ol>
+</div>
+<div id="outline-container-orgheadline5" class="outline-4">
+<h4 id="orgheadline5"><span class="section-number-4">2.1.3</span> daily emacs, finally</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+<a href="Unless%20next%20switch%20is%20-nl,%20load%20"loadup.el"%20first%20thing.">Bookmark: Unless next switch is -nl, load "loadup.el" first thing.</a>
+</p>
+
+<p>
+Unless next switch is -nl, load "loadup.el" first thing.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgheadline63" class="outline-3">
+<h3 id="orgheadline63"><span class="section-number-3">2.2</span> running</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-orgheadline34" class="outline-4">
+<h4 id="orgheadline34"><span class="section-number-4">2.2.1</span> 初始化@main()@emacs.c: initXXX &amp; syms<sub>of</sub><sub>XXX</sub> (defsubr, DEFVAR &amp; DEFSYM)</h4>
+<div class="outline-text-4" id="text-2-2-1">
+</div><ol class="org-ol"><li><a id="orgheadline17"></a>init<sub>obarray</sub> (object array = Vobarray)<br  /><div class="outline-text-5" id="text-2-2-1-1">
+<p>
+<a href="init_obarray%20(void)">Bookmark: init<sub>obarray</sub> (void)</a>
+</p>
+
+<p>
+obarray 就是 object array 的意思，object 的型態都是 Lisp<sub>Object</sub>
+</p>
+
+<p>
+initial<sub>obarray</sub> 是最初始的物件陣列，包含了最開始的三個常量： Qt, Qnil, Qunbound
+</p>
+
+<p>
+最陽春的符號就是 Qt ，其定義代表最低要求 intern<sub>c</sub><sub>string</sub> &amp; SET<sub>SYMBOL</sub><sub>VAL</sub>
+</p>
+</div>
+<ol class="org-ol"><li><a id="orgheadline10"></a>Qt: "t"<br  /><ol class="org-ol"><li><a id="orgheadline7"></a>Qt = intern<sub>c</sub><sub>string</sub> ("t");<br  /></li>
+<li><a id="orgheadline8"></a>SET<sub>SYMBOL</sub><sub>VAL</sub> (XSYMBOL (Qt), Qt);<br  /></li>
+<li><a id="orgheadline9"></a>XSYMBOL (Qt)-&gt;constant = 1;<br  /></li></ol></li>
+
+<li><a id="orgheadline14"></a>Qnil: "nil"<br  /><div class="outline-text-6" id="text-2-2-1-1-2">
+<p>
+<i>* Set temporary dummy values to Qnil and Vpurify<sub>flag</sub> to satisfy the
+   NILP (Vpurify<sub>flag</sub>) check in intern<sub>c</sub><sub>string</sub>.  *</i>
+Qnil = make<sub>number</sub> (-1); Vpurify<sub>flag</sub> = make<sub>number</sub> (1);
+</p>
+</div>
+<ol class="org-ol"><li><a id="orgheadline11"></a>Qnil = intern<sub>c</sub><sub>string</sub> ("nil");<br  /></li>
+<li><a id="orgheadline12"></a>SET<sub>SYMBOL</sub><sub>VAL</sub> (XSYMBOL (Qnil), Qnil);<br  /></li>
+<li><a id="orgheadline13"></a>XSYMBOL (Qnil)-&gt;constant = 1;<br  /><div class="outline-text-7" id="text-2-2-1-1-2-3">
+<p>
+XSYMBOL (Qnil)-&gt;declared<sub>special</sub> = 1;
+set<sub>symbol</sub><sub>plist</sub> (Qnil, Qnil);
+set<sub>symbol</sub><sub>function</sub> (Qnil, Qnil);
+</p>
+
+<p>
+XSYMBOL (Qnil)-&gt;declared<sub>special</sub> = 1;
+</p>
+</div></li></ol></li>
+
+<li><a id="orgheadline16"></a>Qunbound: "unbound"<br  /><div class="outline-text-6" id="text-2-2-1-1-3">
+<p>
+Qunbound = Fmake<sub>symbol</sub> (build<sub>pure</sub><sub>c</sub><sub>string</sub> ("unbound"));
+<i>* Fmake<sub>symbol</sub> inits fields of new symbols with Qunbound and Qnil,
+   so those two need to be fixed manually.  *</i>
+</p>
+</div>
+<ol class="org-ol"><li><a id="orgheadline15"></a>SET<sub>SYMBOL</sub><sub>VAL</sub> (XSYMBOL (Qunbound), Qunbound);<br  /><div class="outline-text-7" id="text-2-2-1-1-3-1">
+<p>
+set<sub>symbol</sub><sub>function</sub> (Qunbound, Qnil);
+set<sub>symbol</sub><sub>plist</sub> (Qunbound, Qnil);
+</p>
+</div></li></ol></li></ol></li>
+
+<li><a id="orgheadline18"></a>init<sub>XXX</sub>: 以 Vcommand<sub>line</sub><sub>args</sub> 為例<br  /><div class="outline-text-5" id="text-2-2-1-2">
+<p>
+<a href="init_cmdargs%20(argc,%20argv,%20skip_args,%20original_pwd);">Bookmark: init<sub>cmdargs</sub> (argc, argv, skip<sub>args</sub>, original<sub>pwd</sub>);</a>
+</p>
+
+<p>
+<a href="init_cmdargs%20(int%20argc,%20char%20**argv,%20int%20skip_args,%20char%20*original_pwd)">Bookmark: init<sub>cmdargs</sub> (int argc, char **argv, int skip<sub>args</sub>, char *original<sub>pwd</sub>)</a>
+</p>
+
+<p>
+<a href="Fcons%20(build_unibyte_string%20(argv%5Bi%5D),%20Vcommand_line_args);">Bookmark: Fcons (build<sub>unibyte</sub><sub>string</sub> (argv{i}), Vcommand<sub>line</sub><sub>args</sub>);</a>
+</p>
+
+<p>
+Vcommand<sub>line</sub><sub>args</sub> = Qnil;
+</p>
+
+<p>
+for (i = argc - 1; i &gt;= 0; i&#x2013;)
+  {
+    if (i == 0 || i &gt; skip<sub>args</sub>)
+      /* For the moment, we keep arguments as is in unibyte strings.
+         They are decoded in the function command-line after we know
+         locale-coding-system.  */
+      Vcommand<sub>line</sub><sub>args</sub>
+        = Fcons (build<sub>unibyte</sub><sub>string</sub> (argv[i]), Vcommand<sub>line</sub><sub>args</sub>);
+  }
+</p>
+</div></li>
+
+<li><a id="orgheadline19"></a>DEFVAR in syms<sub>of</sub><sub>emacs</sub> ()<br  /><div class="outline-text-5" id="text-2-2-1-3">
+<p>
+<a href="syms_of_emacs%20();">Bookmark: syms<sub>of</sub><sub>emacs</sub> ();</a>
+</p>
+
+<p>
+<a href="void%20syms_of_emacs%20(void)">Bookmark: void syms<sub>of</sub><sub>emacs</sub> (void)</a>
+</p>
+
+<p>
+<a href="DEFVAR_LISP%20("command-line-args",%20Vcommand_line_args,">Bookmark: DEFVAR<sub>LISP</sub> ("command-line-args", Vcommand<sub>line</sub><sub>args</sub>,</a>
+</p>
+
+<p>
+  DEFVAR<sub>LISP</sub> ("command-line-args", Vcommand<sub>line</sub><sub>args</sub>,
+               doc: <i>* Args passed by shell to Emacs, as a list of strings.
+Many arguments are deleted from the list as they are processed.  *</i>);
+</p>
+
+<p>
+DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料，作用比較單純
+</p>
+</div></li>
+
+<li><a id="orgheadline31"></a>DEFVAR<br  /><ol class="org-ol"><li><a id="orgheadline20"></a>DEFVAR<sub>LISP</sub> @ lread.c<br  /><div class="outline-text-6" id="text-2-2-1-4-1">
+<p>
+<a href="DEFVAR_LISP%20("command-line-args",%20Vcommand_line_args,">Bookmark: DEFVAR<sub>LISP</sub> ("command-line-args", Vcommand<sub>line</sub><sub>args</sub>,</a>
+</p>
+
+<p>
+<a href="#define%20DEFVAR_LISP(lname,%20vname,%20doc)">Bookmark: #define DEFVAR<sub>LISP</sub>(lname, vname, doc)</a>
+</p>
+
+<p>
+/* Macros we use to define forwarded Lisp variables.
+   These are used in the syms<sub>of</sub><sub>FILENAME</sub> functions.
+</p>
+
+<p>
+An ordinary (not in buffer<sub>defaults</sub>, per-buffer, or per-keyboard)
+lisp variable is actually a field in `struct emacs<sub>globals</sub>'.  The
+field's name begins with "f_", which is a convention enforced by
+these macros.  Each such global has a corresponding #define in
+globals.h; the plain name should be used in the code.
+</p>
+
+<p>
+E.g., the global "cons<sub>cells</sub><sub>consed</sub>" is declared as "int
+f<sub>cons</sub><sub>cells</sub><sub>consed</sub>" in globals.h, but there is a define:
+</p>
+
+<p>
+#define cons<sub>cells</sub><sub>consed</sub> globals.f<sub>cons</sub><sub>cells</sub><sub>consed</sub>
+</p>
+
+<p>
+All C code uses the `cons<sub>cells</sub><sub>consed</sub>' name.  This is all done
+this way to support indirection for multi-threaded Emacs.  */
+</p>
+
+<p>
+#define DEFVAR<sub>LISP</sub>(lname, vname, doc)                \
+  do {                                                \
+    static struct Lisp<sub>Objfwd</sub> o<sub>fwd</sub>;                \
+    defvar<sub>lisp</sub> (&amp;o<sub>fwd</sub>, lname, &amp;globals.f_ ## vname);                \
+  } while (false)
+</p>
+
+<p>
+在執行最開始的 make 的過程中，所有 DEFVAR 的 vname 會被收集到 globals.h 當中， 成為 emacs<sub>globasl</sub> 的一個欄位， 名稱會加上前綴 f_ , 然後又被巨集宣告為與 lname 同名的變數。
+</p>
+</div></li>
+<li><a id="orgheadline21"></a>defvar<sub>lisp</sub> @ lread.c<br  /><div class="outline-text-6" id="text-2-2-1-4-2">
+<p>
+由以下程式碼可看出，這些變數會存到 staticvec 這個陣列中， 這個部分與 gargabe collection 有關， 在此不詳述。 與 defsubr 的作法類似， 此變數的名稱會被註冊為一符號，並以 obarray 存放，方便以變數名查詢符號。 符號再經 SET<sub>SYMBOL</sub><sub>FWD</sub> 存放此一變數的指標。
+</p>
+
+<p>
+<a href="defvar_lisp%20(struct%20Lisp_Objfwd%20*o_fwd,">Bookmark: defvar<sub>lisp</sub> (struct Lisp<sub>Objfwd</sub> *o<sub>fwd</sub>,</a>
+</p>
+
+<p>
+/* Similar but define a variable whose value is the Lisp Object stored
+   at address.  Two versions: with and without gc-marking of the C
+   variable.  The nopro version is used when that variable will be
+   gc-marked for some other reason, since marking the same slot twice
+   can cause trouble with strings.  */
+void
+defvar<sub>lisp</sub><sub>nopro</sub> (struct Lisp<sub>Objfwd</sub> *o<sub>fwd</sub>,
+                   const char *namestring, Lisp<sub>Object</sub> *address)
+{
+  Lisp<sub>Object</sub> sym;
+  sym = intern<sub>c</sub><sub>string</sub> (namestring);
+  o<sub>fwd</sub>-&gt;type = Lisp<sub>Fwd</sub><sub>Obj</sub>;
+  o<sub>fwd</sub>-&gt;objvar = address;
+  XSYMBOL (sym)-&gt;declared<sub>special</sub> = 1;
+  XSYMBOL (sym)-&gt;redirect = SYMBOL<sub>FORWARDED</sub>;
+  SET<sub>SYMBOL</sub><sub>FWD</sub> (XSYMBOL (sym), (union Lisp<sub>Fwd</sub> *)o<sub>fwd</sub>);
+}
+</p>
+
+<p>
+void
+defvar<sub>lisp</sub> (struct Lisp<sub>Objfwd</sub> *o<sub>fwd</sub>,
+             const char *namestring, Lisp<sub>Object</sub> *address)
+{
+  defvar<sub>lisp</sub><sub>nopro</sub> (o<sub>fwd</sub>, namestring, address);
+  staticpro (address);
+}
+</p>
+</div></li>
+<li><a id="orgheadline22"></a>staticpro: garbage collection<br  /><div class="outline-text-6" id="text-2-2-1-4-3">
+<p>
+<a href="staticpro%20(Lisp_Object%20*varaddress)">Bookmark: staticpro (Lisp<sub>Object</sub> *varaddress)</a>
+</p>
+
+<p>
+/***********************************************************************
+                          Protection from GC
+ ***********************************************************************/
+</p>
+
+<p>
+<i>* Put an entry in staticvec, pointing at the variable with address
+   VARADDRESS.  *</i>
+</p>
+
+<p>
+void
+staticpro (Lisp<sub>Object</sub> *varaddress)
+{
+  if (staticidx &gt;= NSTATICS)
+    fatal ("NSTATICS too small; try increasing and recompiling Emacs.");
+  staticvec[staticidx++] = varaddress;
+}
+</p>
+</div></li>
+<li><a id="orgheadline23"></a>SET<sub>SYMBOL</sub><sub>FWD</sub><br  /><div class="outline-text-6" id="text-2-2-1-4-4">
+<p>
+<a href="SET_SYMBOL_FWD%20(struct%20Lisp_Symbol%20*sym,%20union%20Lisp_Fwd%20*v)">Bookmark: SET<sub>SYMBOL</sub><sub>FWD</sub> (struct Lisp<sub>Symbol</sub> *sym, union Lisp<sub>Fwd</sub> *v)</a>
+</p>
+
+<p>
+INLINE void
+SET<sub>SYMBOL</sub><sub>FWD</sub> (struct Lisp<sub>Symbol</sub> *sym, union Lisp<sub>Fwd</sub> *v)
+{
+  eassert (sym-&gt;redirect == SYMBOL<sub>FORWARDED</sub>);
+  sym-&gt;val.fwd = v;
+}
+</p>
+</div></li>
+<li><a id="orgheadline29"></a>SYMBOL<sub>FORWARDED</sub> 影響到的函數<br  /><ol class="org-ol"><li><a id="orgheadline24"></a>specbind<br  /><div class="outline-text-7" id="text-2-2-1-4-5-1">
+<p>
+特重要！！！ lisp 中的這些函數也需要它： let, 以及因為實質上使用了 let 而以 C 改寫的函數
+</p>
+</div></li>
+<li><a id="orgheadline28"></a>其它<br  /><ol class="org-ol"><li><a id="orgheadline25"></a>buffer<sub>local</sub><sub>value</sub><sub>1</sub><br  /><div class="outline-text-8" id="text-2-2-1-4-5-2-1">
+<p>
+/* Return the value of VARIABLE in BUFFER.
+If VARIABLE does not have a buffer-local binding in BUFFER, the value
+is the default binding of the variable. */
+</p>
+</div></li>
+<li><a id="orgheadline26"></a>store<sub>frame</sub><sub>param</sub><br  /></li>
+<li><a id="orgheadline27"></a>mark<sub>object</sub><br  /></li></ol></li></ol></li>
+
+<li><a id="orgheadline30"></a>staticvec: 與 GC 有關，不重要<br  /></li></ol></li>
+
+<li><a id="orgheadline32"></a>兼論 expand-file-name<br  /><div class="outline-text-5" id="text-2-2-1-5">
+<p>
+<a href="EMACSLOADPATH=$(CURDIR)/../lisp">Bookmark: EMACSLOADPATH=$(CURDIR)/../lisp</a>
+</p>
+
+<p>
+DEFUN ("expand-file-name", Fexpand<sub>file</sub><sub>name</sub>, Sexpand<sub>file</sub><sub>name</sub>, 1, 2, 0,
+</p>
+</div></li>
+
+
+
+
+
+<li><a id="orgheadline33"></a>小結： 復刻 emacs 初始化行為<br  /></li></ol>
+</div>
+<div id="outline-container-orgheadline39" class="outline-4">
+<h4 id="orgheadline39"><span class="section-number-4">2.2.2</span> C / Lisp 兩用函數的宣告/定義及登錄： DEFUN (&amp; defsubr) @syms<sub>of</sub><sub>XXX</sub>（）</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+以 if 這個函數來作為範例，它的宣告/定義是 DEFUN ("if", Fif, Sif, 2, UNEVALLED, 0 …
+</p>
+
+<p>
+前面三個參數是最重要的， "if" 是它在 lisp 程式中的名稱， Fif 是在 C 程式碼中的名稱， 至於 Sif 可以看做是紀錄相關資訊的結構 （struct） 的名稱。
+</p>
+
+<p>
+<a href="#define%20DEFUN(lname,%20fnname,%20sname,%20minargs,%20maxargs,%20intspec,%20doc)">Bookmark: #define DEFUN(lname, fnname, sname, minargs, maxargs, intspec, doc)</a>
+</p>
+
+<p>
+#define DEFUN(lname, fnname, sname, minargs, maxargs, intspec, doc)        \
+   Lisp<sub>Object</sub> fnname DEFUN<sub>ARGS</sub>_ ## maxargs ;                                \
+   static struct Lisp<sub>Subr</sub> alignas (GCALIGNMENT) sname =                \
+     { { PVEC<sub>SUBR</sub> &lt;&lt; PSEUDOVECTOR<sub>AREA</sub><sub>BITS</sub> },                                \
+       { DEFUN<sub>FUNCTION</sub><sub>INIT</sub> (fnname, maxargs) },                        \
+       minargs, maxargs, lname, intspec, 0};                                \
+   Lisp<sub>Object</sub> fnname
+</p>
+
+<p>
+sname 此一結構的 an 成員 (0&lt;=n&lt;=9) 即為 FXXX 形式的函數（指標？）
+</p>
+
+<p>
+至於定義後要如何被 lisp 的程式碼找到並呼叫呢？ 這就需要以 defsubr 來登錄 Sif 結構了。 
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="orgheadline38"></a>defsubr (&amp;SXXX); 將名稱加到 Vobarray 中、登錄 SXXX 結構<br  /><div class="outline-text-5" id="text-2-2-2-1">
+<p>
+<a href="defsubr">Bookmark: defsubr</a>
+</p>
+</div>
+<ol class="org-ol"><li><a id="orgheadline35"></a>intern<sub>c</sub><sub>string</sub><br  /><div class="outline-text-6" id="text-2-2-2-1-1">
+<p>
+此函數首先呼叫了 intern<sub>c</sub><sub>string</sub> 以登錄函數名稱為符號，並加到 Vobarray 中
+</p>
+
+<p>
+<a href="intern_c_string%20(const%20char%20*str)">Bookmark: intern<sub>c</sub><sub>string</sub> (const char *str)</a>
+</p>
+
+<p>
+<a href="intern_c_string_1%20(const%20char%20*str,%20ptrdiff_t%20len)">Bookmark: intern<sub>c</sub><sub>string</sub><sub>1</sub> (const char *str, ptrdiff<sub>t</sub> len)</a>
+</p>
+
+<p>
+<i>* Intern the C string STR: return a symbol with that name,
+   interned in the current Vobarray.  *</i>
+</p>
+
+
+<p>
+typedef EMACS<sub>INT</sub> Lisp<sub>Object</sub>;
+</p>
+</div></li>
+<li><a id="orgheadline36"></a>XSETSUBR (tem, sname)<br  /><div class="outline-text-6" id="text-2-2-2-1-2">
+<p>
+#define XSETSUBR(a, b) (XSETPSEUDOVECTOR (a, b, PVEC<sub>SUBR</sub>))
+</p>
+</div></li>
+<li><a id="orgheadline37"></a>set<sub>symbol</sub><sub>function</sub><br  /><div class="outline-text-6" id="text-2-2-2-1-3">
+<p>
+然後呼叫 set<sub>symbol</sub><sub>function</sub> 把符號和函數連結起來
+</p>
+
+<p>
+<a href="set_symbol_function%20(Lisp_Object%20sym,%20Lisp_Object%20function)">Bookmark: set<sub>symbol</sub><sub>function</sub> (Lisp<sub>Object</sub> sym, Lisp<sub>Object</sub> function)</a>
+</p>
+</div></li></ol></li></ol>
+</div>
+
+
+<div id="outline-container-orgheadline42" class="outline-4">
+<h4 id="orgheadline42"><span class="section-number-4">2.2.3</span> 為何沒有DEFCONST?DEFSYM的作用？</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+<a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Symbols.html#Creating-Symbols">https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Symbols.html#Creating-Symbols</a>
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="orgheadline40"></a>func, subst, alias, macro<br  /></li>
+
+<li><a id="orgheadline41"></a>var, const, custom<br  /></li></ol>
+</div>
+
+<div id="outline-container-orgheadline62" class="outline-4">
+<h4 id="orgheadline62"><span class="section-number-4">2.2.4</span> REPL</h4>
+<div class="outline-text-4" id="text-2-2-4">
+<p>
+在 main 函數中，呼叫了 Frecursive-edit ，這是事件處理迴圈的入口
+</p>
+
+<p>
+<a href="Frecursive_edit%20();">Bookmark: Frecursive<sub>edit</sub> ();</a>
+</p>
+
+<p>
+<a href="DEFUN%20("recursive-edit",%20Frecursive_edit,%20Srecursive_edit,%200,%200,%20"",">DEFUN ("recursive-edit", Frecursive<sub>edit</sub>, Srecursive<sub>edit</sub>, 0, 0, "",</a>
+</p>
+
+<p>
+<a href="command_loop%20(void)">Bookmark: command<sub>loop</sub> (void)</a>
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="orgheadline60"></a>load "loadup.el" first thing<br  /><div class="outline-text-5" id="text-2-2-4-1">
+<p>
+在進入 Frecursive-edit 之前，已經塞了指令 load loadup.el 給最上層的環境：
+</p>
+
+<p>
+<a href="Vtop_level%20=%20list2%20(intern_c_string%20("load"),">Bookmark: Vtop<sub>level</sub> = list2 (intern<sub>c</sub><sub>string</sub> ("load"),</a>
+</p>
+
+<p>
+因此先討論整個 eval 的入口
+</p>
+
+<p>
+<a href="internal_catch%20(Qtop_level,%20top_level_1,%20Qnil);">Bookmark: internal<sub>catch</sub> (Qtop<sub>level</sub>, top<sub>level</sub><sub>1</sub>, Qnil);</a>
+</p>
+
+<p>
+<a href="top_level_1%20(Lisp_Object%20ignore)">Bookmark: top<sub>level</sub><sub>1</sub> (Lisp<sub>Object</sub> ignore)</a>
+</p>
+
+<p>
+<a href="internal_condition_case%20(top_level_2,%20Qerror,%20cmd_error);">Bookmark: internal<sub>condition</sub><sub>case</sub> (top<sub>level</sub><sub>2</sub>, Qerror, cmd<sub>error</sub>);</a>
+</p>
+
+<p>
+<a href="top_level_2%20(void)">Bookmark: top<sub>level</sub><sub>2</sub> (void)</a>
+</p>
+
+<p>
+<a href="return%20Feval%20(Vtop_level,%20Qnil);">Bookmark: return Feval (Vtop<sub>level</sub>, Qnil);</a>
+</p>
+
+<p>
+<a href="DEFUN%20("eval",%20Feval,%20Seval,%201,%202,%200,">Bookmark: DEFUN ("eval", Feval, Seval, 1, 2, 0,</a>
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="orgheadline43"></a>eval<sub>sub</sub><br  /><div class="outline-text-6" id="text-2-2-4-1-1">
+<p>
+<a href="return%20unbind_to%20(count,%20eval_sub%20(form));">Bookmark: return unbind<sub>to</sub> (count, eval<sub>sub</sub> (form));</a>
+</p>
+
+<p>
+<a href="eval_sub%20(Lisp_Object%20form)">Bookmark: eval<sub>sub</sub> (Lisp<sub>Object</sub> form)</a>
+</p>
+
+<p>
+此處呼叫了 list 的函數以進行求值
+</p>
+<div class="org-src-container">
+
+<pre class="src src-C">switch (i)
+  {
+  case 0:
+    val = (XSUBR (fun)-&gt;function.a0 ());
+    break;
+  case 1:
+    val = (XSUBR (fun)-&gt;function.a1 (argvals[0]));
+    break;
+  case 2:
+    val = (XSUBR (fun)-&gt;function.a2 (argvals[0], argvals[1]));
+    break;
+  case 3:
+    val = (XSUBR (fun)-&gt;function.a3
+	   (argvals[0], argvals[1], argvals[2]));
+    break;
+  case 4:
+    val = (XSUBR (fun)-&gt;function.a4
+	   (argvals[0], argvals[1], argvals[2], argvals[3]));
+    break;
+  case 5:
+    val = (XSUBR (fun)-&gt;function.a5
+	   (argvals[0], argvals[1], argvals[2], argvals[3],
+	    argvals[4]));
+    break;
+  case 6:
+    val = (XSUBR (fun)-&gt;function.a6
+	   (argvals[0], argvals[1], argvals[2], argvals[3],
+	    argvals[4], argvals[5]));
+    break;
+  case 7:
+    val = (XSUBR (fun)-&gt;function.a7
+	   (argvals[0], argvals[1], argvals[2], argvals[3],
+	    argvals[4], argvals[5], argvals[6]));
+    break;
+
+  case 8:
+    val = (XSUBR (fun)-&gt;function.a8
+	   (argvals[0], argvals[1], argvals[2], argvals[3],
+	    argvals[4], argvals[5], argvals[6], argvals[7]));
+    break;
+
+  default:
+    /* Someone has created a subr that takes more arguments than
+       is supported by this code.  We need to either rewrite the
+       subr to use a different argument protocol, or add more
+       cases to this switch.  */
+    emacs_abort ();
+  }
+</pre>
+</div>
+</div></li>
+<li><a id="orgheadline51"></a>Fload(): Execute a file of Lisp code named FILE.<br  /><div class="outline-text-6" id="text-2-2-4-1-2">
+<p>
+Fload() 雖然不是初級的語法元素，但是了解它的流程對測試有相當的幫助，因此以下說明它的執行流程
+</p>
+
+<p>
+<a href="DEFUN%20("load",%20Fload,%20Sload,%201,%205,%200,">Bookmark: DEFUN ("load", Fload, Sload, 1, 5, 0,</a>
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="orgheadline50"></a>readevalloop<br  /><div class="outline-text-7" id="text-2-2-4-1-2-1">
+<p>
+<a href="readevalloop%20(Qget_file_char,%20stream,%20hist_file_name,">Bookmark: readevalloop (Qget<sub>file</sub><sub>char</sub>, stream, hist<sub>file</sub><sub>name</sub>,</a>
+</p>
+
+<p>
+<a href="readevalloop%20(Lisp_Object%20readcharfun,">Bookmark: readevalloop (Lisp<sub>Object</sub> readcharfun,</a>
+</p>
+
+<p>
+即然名為 ReadEval(Print)Loop = RE(P)L ，應該就會有個迴圈，進行讀取-&gt;求值。 
+</p>
+
+<p>
+參數 stream 為所讀取檔案的 handle , 若為 nil 時表示由 stdin 讀取。
+</p>
+
+<p>
+迴圈中以 READCHAR 來預讀一個字元，以判斷接下來的語法元素，並調用對應的函式
+</p>
+
+<p>
+除了 read<sub>list</sub> 以外，其它函數都還滿 trivial 的，因此以下集中討論 read<sub>list</sub>
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="orgheadline44"></a>READCHAR<br  /><div class="outline-text-8" id="text-2-2-4-1-2-1-1">
+<p>
+<a href="c%20=%20READCHAR;">Bookmark: c = READCHAR;</a> 
+</p>
+
+<p>
+#define READCHAR readchar (readcharfun, NULL)
+</p>
+
+<p>
+<a href="static%20int%20readchar%20(Lisp_Object%20readcharfun,%20bool%20*multibyte)">Bookmark: static int readchar (Lisp<sub>Object</sub> readcharfun, bool *multibyte)</a>
+</p>
+
+<p>
+/* When READCHARFUN is Qget<sub>file</sub><sub>char</sub>, Qget<sub>emacs</sub><sub>mule</sub><sub>file</sub><sub>char</sub>,
+   Qlambda, or a cons, we use this to keep an unread character because
+   a file stream can't handle multibyte-char unreading.  The value -1
+   means that there's no unread character.  */
+</p>
+</div></li>
+
+<li><a id="orgheadline47"></a>read<sub>list</sub><br  /><div class="outline-text-8" id="text-2-2-4-1-2-1-2">
+<p>
+<a href="val%20=%20read_list%20(0,%20readcharfun);">Bookmark: val = read<sub>list</sub> (0, readcharfun);</a>
+</p>
+
+<p>
+<a href="static%20Lisp_Object%20read_list%20(bool%20flag,%20Lisp_Object%20readcharfun)">Bookmark: static Lisp<sub>Object</sub> read<sub>list</sub> (bool flag, Lisp<sub>Object</sub> readcharfun)</a>
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="orgheadline45"></a>read1<br  /><div class="outline-text-9" id="text-2-2-4-1-2-1-2-1">
+<p>
+<a href="elt%20=%20read1%20(readcharfun,%20&amp;ch,%20first_in_list);">Bookmark: elt = read1 (readcharfun, &amp;ch, first<sub>in</sub><sub>list</sub>);</a>
+</p>
+
+<p>
+<a href="static%20Lisp_Object%20read1%20(Lisp_Object%20readcharfun,%20int%20*pch,%20bool%20first_in_list)">Bookmark: static Lisp<sub>Object</sub> read1 (Lisp<sub>Object</sub> readcharfun, int *pch, bool first<sub>in</sub><sub>list</sub>)</a>
+</p>
+</div></li>
+
+<li><a id="orgheadline46"></a>Fintern<br  /><div class="outline-text-9" id="text-2-2-4-1-2-1-2-2">
+<p>
+<a href="result%20=%20(uninterned_symbol%20?%20Fmake_symbol%20(name)%20:%20Fintern%20(name,%20Qnil));">Bookmark: result = (uninterned<sub>symbol</sub> ? Fmake<sub>symbol</sub> (name) : Fintern (name, Qnil));</a>
+</p>
+
+<p>
+<a href="DEFUN%20("intern",%20Fintern,%20Sintern,%201,%202,%200,">Bookmark: DEFUN ("intern", Fintern, Sintern, 1, 2, 0,</a>
+</p>
+
+<p>
+/* Return the canonical symbol whose name is STRING.
+If there is none, one is created by this function and returned.
+A second optional argument specifies the obarray to use;
+it defaults to the value of `Vobarray'.  */
+</p>
+
+<p>
+此一函數做的事基本上就跟 intern<sub>c</sub><sub>string</sub><sub>1</sub>/intern<sub>c</sub><sub>string</sub> 一樣，查詢此一字串是否已定義為符號，並傳回之
+</p>
+</div></li></ol></li>
+
+<li><a id="orgheadline48"></a>DEFUN ("macroexpand", Fmacroexpand, Smacroexpand, 1, 2, 0,<br  /><div class="outline-text-8" id="text-2-2-4-1-2-1-3">
+<p>
+<a href="DEFUN%20("macroexpand",%20Fmacroexpand,%20Smacroexpand,%201,%202,%200,">Bookmark: DEFUN ("macroexpand", Fmacroexpand, Smacroexpand, 1, 2, 0,</a>
+</p>
+
+<p>
+這個部分我滿懷疑是不是寫錯了，似乎永遠不會執行到？？
+</p>
+</div></li>
+
+<li><a id="orgheadline49"></a>eval<sub>sub</sub><br  /><div class="outline-text-8" id="text-2-2-4-1-2-1-4">
+<p>
+<a href="val%20=%20eval_sub%20(val);">Bookmark: val = eval<sub>sub</sub> (val);</a>
+</p>
+
+<p>
+此後由於 read<sub>list</sub> 已經進行了實質上的 scanning ，而 emacs lisp 實質上就是 AST ，所以不需要 parsing
+</p>
+
+<p>
+因此可以直接進行求值。
+</p>
+</div></li></ol></li></ol></li>
+<li><a id="orgheadline59"></a>emacs lisp key syntax elements in eval.c<br  /><div class="outline-text-6" id="text-2-2-4-1-3">
+<p>
+<a href="syms_of_eval%20(void)">Bookmark: syms<sub>of</sub><sub>eval</sub> (void)</a>
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="orgheadline52"></a>conditionals<br  /><div class="outline-text-7" id="text-2-2-4-1-3-1">
+<p>
+defsubr (&amp;Sor);
+defsubr (&amp;Sand);
+defsubr (&amp;Sif);
+defsubr (&amp;Scond);
+</p>
+</div></li>
+
+<li><a id="orgheadline53"></a>blocks<br  /><div class="outline-text-7" id="text-2-2-4-1-3-2">
+<p>
+defsubr (&amp;Sprogn);
+defsubr (&amp;Sprog1);
+defsubr (&amp;Sprog2);
+</p>
+</div></li>
+
+<li><a id="orgheadline54"></a>var<br  /><div class="outline-text-7" id="text-2-2-4-1-3-3">
+<p>
+defsubr (&amp;Ssetq);
+defsubr (&amp;Squote);
+defsubr (&amp;Sfunction);
+defsubr (&amp;Sdefault<sub>toplevel</sub><sub>value</sub>);
+defsubr (&amp;Sset<sub>default</sub><sub>toplevel</sub><sub>value</sub>);
+defsubr (&amp;Sdefvar);
+defsubr (&amp;Sdefvaralias);
+defsubr (&amp;Sdefconst);
+defsubr (&amp;Smake<sub>var</sub><sub>non</sub><sub>special</sub>);
+defsubr (&amp;Slet);
+defsubr (&amp;SletX);
+</p>
+</div></li>
+
+<li><a id="orgheadline55"></a>macro<br  /><div class="outline-text-7" id="text-2-2-4-1-3-4">
+<p>
+defsubr (&amp;Swhile);
+defsubr (&amp;Smacroexpand);
+</p>
+</div></li>
+
+<li><a id="orgheadline56"></a>exception<br  /><div class="outline-text-7" id="text-2-2-4-1-3-5">
+<p>
+defsubr (&amp;Scatch);
+defsubr (&amp;Sthrow);
+defsubr (&amp;Sunwind<sub>protect</sub>);
+</p>
+</div></li>
+
+<li><a id="orgheadline57"></a>flow<br  /><div class="outline-text-7" id="text-2-2-4-1-3-6">
+<p>
+defsubr (&amp;Scondition<sub>case</sub>);
+defsubr (&amp;Ssignal);
+defsubr (&amp;Scommandp);
+defsubr (&amp;Sautoload);
+defsubr (&amp;Sautoload<sub>do</sub><sub>load</sub>);
+defsubr (&amp;Seval);
+defsubr (&amp;Sapply);
+defsubr (&amp;Sfuncall);
+</p>
+</div></li>
+
+<li><a id="orgheadline58"></a>misc<br  /><div class="outline-text-7" id="text-2-2-4-1-3-7">
+<p>
+defsubr (&amp;Srun<sub>hooks</sub>);
+defsubr (&amp;Srun<sub>hook</sub><sub>with</sub><sub>args</sub>);
+defsubr (&amp;Srun<sub>hook</sub><sub>with</sub><sub>args</sub><sub>until</sub><sub>success</sub>);
+defsubr (&amp;Srun<sub>hook</sub><sub>with</sub><sub>args</sub><sub>until</sub><sub>failure</sub>);
+defsubr (&amp;Srun<sub>hook</sub><sub>wrapped</sub>);
+defsubr (&amp;Sfetch<sub>bytecode</sub>);
+defsubr (&amp;Sbacktrace<sub>debug</sub>);
+defsubr (&amp;Sbacktrace);
+defsubr (&amp;Sbacktrace<sub>frame</sub>);
+defsubr (&amp;Sbacktrace<sub>eval</sub>);
+defsubr (&amp;Sbacktrace_<sub>locals</sub>);
+defsubr (&amp;Sspecial<sub>variable</sub><sub>p</sub>);
+defsubr (&amp;Sfunctionp);
+</p>
+</div></li></ol></li></ol></li>
+
+<li><a id="orgheadline61"></a>UI<br  /><div class="outline-text-5" id="text-2-2-4-2">
+<p>
+以下部分屬於使用者互動，在 repl 的層級暫不討論
+</p>
+
+<p>
+<a href="command_loop_2%20(Lisp_Object%20ignore)">Bookmark: command<sub>loop</sub><sub>2</sub> (Lisp<sub>Object</sub> ignore)</a>
+</p>
+
+<p>
+<a href="internal_condition_case%20(command_loop_1,%20Qerror,%20cmd_error);">Bookmark: internal<sub>condition</sub><sub>case</sub> (command<sub>loop</sub><sub>1</sub>, Qerror, cmd<sub>error</sub>);</a>
+</p>
+</div></li></ol>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgheadline88" class="outline-2">
+<h2 id="orgheadline88"><span class="section-number-2">3</span> 從 mal 方找尋 emacs 方的對應元素</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-orgheadline65" class="outline-3">
+<h3 id="orgheadline65"><span class="section-number-3">3.1</span> repl<sub>env</sub> =&gt; Vobarray</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+mal 在初始化的過程中，把 core.ns 的內容複製到了 repl<sub>env</sub> 當中，因此 repl<sub>env</sub> 才是真正意義上存放所有 symboe 的物件，core.ns 則類似於 initial<sub>obarray</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline69" class="outline-3">
+<h3 id="orgheadline69"><span class="section-number-3">3.2</span> equal</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+嘗試載入 loadup.el 的過程中，第一個遇到的問題就是找不到這個算子。這個問題倒是好解決，因為 mal 本身已經定義了 "=" 算子；不過這倒是提供我們再一次審視 scanning / parsing 的流程
+</p>
+</div>
+
+<div id="outline-container-orgheadline66" class="outline-4">
+<h4 id="orgheadline66"><span class="section-number-4">3.2.1</span> emacs implementation</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+fns.c  中有如下定義：
+</p>
+
+<p>
+<a href="DEFUN%20("equal",%20Fequal,%20Sequal,%202,%202,%200,">Bookmark: DEFUN ("equal", Fequal, Sequal, 2, 2, 0,</a>
+</p>
+
+<p>
+<a href="%20%20defsubr%20(&amp;Sequal);">Bookmark:   defsubr (&amp;Sequal);</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline67" class="outline-4">
+<h4 id="orgheadline67"><span class="section-number-4">3.2.2</span> mal implementation</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+core.js 中有如下定義：
+</p>
+
+<p>
+<a href="var%20ns%20=%20{'type':%20types._obj_type,%20'=':%20types._equal_Q,">Bookmark: var ns = {'type': types.<sub>obj</sub><sub>type</sub>, '=': types.<sub>equal</sub><sub>Q</sub>,</a>
+</p>
+
+<p>
+因此符號的代表字串 '=' ，以及對應的函數 _equal<sub>Q</sub> ，做為 hash 的一筆資料而存在於 ns 中
+</p>
+
+<p>
+stepA<sub>mal.js</sub> 中有如下定義：
+</p>
+
+<p>
+<a href="for%20(var%20n%20in%20core.ns)%20{%20repl_env.set(types._symbol(n),%20core.ns%5Bn%5D);%20}">Bookmark: for (var n in core.ns) { repl<sub>env.set</sub>(types.<sub>symbol</sub>(n), core.ns{n}); }</a>
+</p>
+
+<p>
+ns 的資料再被逐筆的複製到 repl<sub>env</sub> 中
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline68" class="outline-4">
+<h4 id="orgheadline68"><span class="section-number-4">3.2.3</span> 小結:  DEFUN/defsubr -&gt; core.ns</h4>
+</div>
+</div>
+<div id="outline-container-orgheadline75" class="outline-3">
+<h3 id="orgheadline75"><span class="section-number-3">3.3</span> let* / let</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Note that there are plenty of ways to make (GLOBAL) bindings: ‘defconst’, ‘defun’, ‘defvar’, 'let', ‘flet’, ‘labels’, ‘prog’, etc.
+</p>
+
+<p>
+根據 <a href="https://www.emacswiki.org/emacs/DynamicBindingVsLexicalBinding">此文</a> , emacs 只有 dynamic binding ，也就是說所有符號共用一個資料結構來存放 ， 使得內層的函數/迴圈可以影響外層符號，不管這個符號背後是變數或函數。
+</p>
+
+<p>
+根據這樣的邏輯，dynamic binding (ie emacs lisp) 在局部變數宣告時， 會先查找環境是否有同名的符號，若然則直接使用它，不在自己的 scope 再定義自己的符號； lexical binding (scheme?) 則無論如何都直接在自己的環境中， 為局部變數定義符號，並且優先查找。
+</p>
+
+<p>
+let* 與 let 的不同之處在於，let 的 value 會在與 key 作 binding 前先求值， 因此當 local / global 有同名變數時， 會優先取 global 的值。
+</p>
+
+<p>
+更精確的來說， let 會比 let* 多一個迴圈，先對所有的 value 進行 eval ； 後面的部分就都差不多
+</p>
+</div>
+
+<div id="outline-container-orgheadline72" class="outline-4">
+<h4 id="orgheadline72"><span class="section-number-4">3.3.1</span> emacs:</h4>
+<div class="outline-text-4" id="text-3-3-1">
+</div><ol class="org-ol"><li><a id="orgheadline70"></a>let*<br  /><div class="outline-text-5" id="text-3-3-1-1">
+<p>
+<a href="DEFUN%20("let*",%20FletX,%20SletX,%201,%20UNEVALLED,%200,">Bookmark: DEFUN ("let*", FletX, SletX, 1, UNEVALLED, 0,</a>
+</p>
+</div></li>
+
+<li><a id="orgheadline71"></a>let<br  /><div class="outline-text-5" id="text-3-3-1-2">
+<p>
+<a href="DEFUN%20("let",%20Flet,%20Slet,%201,%20UNEVALLED,%200,">Bookmark: DEFUN ("let", Flet, Slet, 1, UNEVALLED, 0,</a>
+</p>
+</div></li></ol>
+</div>
+
+<div id="outline-container-orgheadline73" class="outline-4">
+<h4 id="orgheadline73"><span class="section-number-4">3.3.2</span> mal:</h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+最外層的環境為 repl<sub>env</sub> ，也就是 DEFUN / DEFVAR / DEFCONST 的作用域
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline74" class="outline-4">
+<h4 id="orgheadline74"><span class="section-number-4">3.3.3</span> 小結： DEFVAR =&gt; init<sub>XXXX</sub></h4>
+<div class="outline-text-4" id="text-3-3-3">
+<p>
+共 738 個， 其初始化常發生在 init<sub>XXXX</sub> 函數中，必需忠實呈現在 js 端
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgheadline78" class="outline-3">
+<h3 id="orgheadline78"><span class="section-number-3">3.4</span> load-path 的初始化</h3>
+<div class="outline-text-3" id="text-3-4">
+</div><div id="outline-container-orgheadline76" class="outline-4">
+<h4 id="orgheadline76"><span class="section-number-4">3.4.1</span> emacs</h4>
+<div class="outline-text-4" id="text-3-4-1">
+<p>
+<a href="init_lread%20(void)">Bookmark: init<sub>lread</sub> (void)</a>
+</p>
+
+<p>
+Vpurify<sub>flag</sub> 在 loadup.el 執行期間，其值為真； EMACSLOADPATH 則通常未指定，暫時忽略它
+</p>
+
+<p>
+<a href="load_path_default%20(void)">Bookmark: load<sub>path</sub><sub>default</sub> (void)</a>
+</p>
+
+<p>
+<a href="EMACSLOADPATH=$(CURDIR)/../lisp">Bookmark: EMACSLOADPATH=$(CURDIR)/../lisp</a>
+</p>
+
+<p>
+因此目前暫時將此變數初始化為 ../lisp
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline77" class="outline-4">
+<h4 id="orgheadline77"><span class="section-number-4">3.4.2</span> mal</h4>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline81" class="outline-3">
+<h3 id="orgheadline81"><span class="section-number-3">3.5</span> or</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+這部分 mal 有實作，而且是以 self-hosting 的方式，省下寫 js 的工夫
+</p>
+</div>
+<div id="outline-container-orgheadline79" class="outline-4">
+<h4 id="orgheadline79"><span class="section-number-4">3.5.1</span> mal implementation</h4>
+<div class="outline-text-4" id="text-3-5-1">
+<p>
+<a href="case%20"or":">Bookmark: case "or":</a>
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline80" class="outline-4">
+<h4 id="orgheadline80"><span class="section-number-4">3.5.2</span> emacs implementation</h4>
+<div class="outline-text-4" id="text-3-5-2">
+<p>
+<a href="DEFUN%20("or",%20For,%20Sor,%200,%20UNEVALLED,%200,">Bookmark: DEFUN ("or", For, Sor, 0, UNEVALLED, 0,</a>
+</p>
+
+<p>
+<a href="defsubr%20(&amp;Sor);">Bookmark: defsubr (&amp;Sor);</a>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgheadline82" class="outline-3">
+<h3 id="orgheadline82"><span class="section-number-3">3.6</span> def! / set / setq</h3>
+</div>
+<div id="outline-container-orgheadline85" class="outline-3">
+<h3 id="orgheadline85"><span class="section-number-3">3.7</span> if</h3>
+<div class="outline-text-3" id="text-3-7">
+</div><div id="outline-container-orgheadline83" class="outline-4">
+<h4 id="orgheadline83"><span class="section-number-4">3.7.1</span> mal implementation</h4>
+<div class="outline-text-4" id="text-3-7-1">
+<p>
+<a href="case%20"if":">Bookmark: case "if":</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline84" class="outline-4">
+<h4 id="orgheadline84"><span class="section-number-4">3.7.2</span> emacs implementation</h4>
+<div class="outline-text-4" id="text-3-7-2">
+<p>
+<a href="DEFUN%20("if",%20Fif,%20Sif,%202,%20UNEVALLED,%200,">Bookmark: DEFUN ("if", Fif, Sif, 2, UNEVALLED, 0,</a>
+</p>
+
+<p>
+<a href="defsubr%20(&amp;Sif);">Bookmark: defsubr (&amp;Sif);</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline86" class="outline-3">
+<h3 id="orgheadline86"><span class="section-number-3">3.8</span> macroexpand</h3>
+<div class="outline-text-3" id="text-3-8">
+<p>
+macroexpand 是一個特殊的算子
+</p>
+
+<p>
+mal 實作如下：
+</p>
+
+<p>
+<a href="mal/macroexpand">mal/macroexpand</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-C">case 'macroexpand':
+    return macroexpand(a1, env);
+</pre>
+</div>
+
+<p>
+<a href="mal/function%20macroexpand">mal/function macroexpand</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-C">function macroexpand(ast, env) {
+    while (is_macro_call(ast, env)) {
+	var mac = env.get(ast[0]);
+	ast = mac.apply(mac, ast.slice(1));
+    }
+    return ast;
+}
+</pre>
+</div>
+
+<p>
+emacs 的實作如下：
+</p>
+
+<p>
+<a href="eval/macroexpand">Bookmark: eval/macroexpand</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-C">DEFUN ("macroexpand", Fmacroexpand, Smacroexpand, 1, 2, 0,
+       doc: /* Return result of expanding macros at top level of FORM.
+If FORM is not a macro call, it is returned unchanged.
+Otherwise, the macro is expanded and the expansion is considered
+in place of FORM.  When a non-macro-call results, it is returned.
+
+The second optional arg ENVIRONMENT specifies an environment of macro
+definitions to shadow the loaded ones for use in file byte-compilation.  */)
+  (Lisp_Object form, Lisp_Object environment)
+{
+  /* With cleanups from Hallvard Furuseth.  */
+  register Lisp_Object expander, sym, def, tem;
+
+  while (1)
+    {
+      /* Come back here each time we expand a macro call,
+	 in case it expands into another macro call.  */
+      if (!CONSP (form))
+	break;
+      /* Set SYM, give DEF and TEM right values in case SYM is not a symbol. */
+      def = sym = XCAR (form);
+      tem = Qnil;
+      /* Trace symbols aliases to other symbols
+	 until we get a symbol that is not an alias.  */
+      while (SYMBOLP (def))
+	{
+	  QUIT;
+	  sym = def;
+	  tem = Fassq (sym, environment);
+	  if (NILP (tem))
+	    {
+	      def = XSYMBOL (sym)-&gt;function;
+	      if (!NILP (def))
+		continue;
+	    }
+	  break;
+	}
+      /* Right now TEM is the result from SYM in ENVIRONMENT,
+	 and if TEM is nil then DEF is SYM's function definition.  */
+      if (NILP (tem))
+	{
+	  /* SYM is not mentioned in ENVIRONMENT.
+	     Look at its function definition.  */
+	  struct gcpro gcpro1;
+	  GCPRO1 (form);
+	  def = Fautoload_do_load (def, sym, Qmacro);
+	  UNGCPRO;
+	  if (!CONSP (def))
+	    /* Not defined or definition not suitable.  */
+	    break;
+	  if (!EQ (XCAR (def), Qmacro))
+	    break;
+	  else expander = XCDR (def);
+	}
+      else
+	{
+	  expander = XCDR (tem);
+	  if (NILP (expander))
+	    break;
+	}
+      {
+	Lisp_Object newform = apply1 (expander, XCDR (form));
+	if (EQ (form, newform))
+	  break;
+	else
+	  form = newform;
+      }
+    }
+  return form;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline87" class="outline-3">
+<h3 id="orgheadline87"><span class="section-number-3">3.9</span> try*/catch*</h3>
+<div class="outline-text-3" id="text-3-9">
+<p>
+catch 是一個特殊的算子， mal 中使用另一個名字： try*/catch*
+</p>
+
+<p>
+mal 實作如下：
+</p>
+
+<p>
+<a href="try%20in%20mal">Bookmark: try in mal</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-C">case "try*":
+    try {
+	return EVAL(a1, env);
+    } catch (exc) {
+	if (a2 &amp;&amp; a2[0].value === "catch*") {
+	    if (exc instanceof Error) { exc = exc.message; }
+	    return EVAL(a2[2], new Env(env, [a2[1]], [exc]));
+	} else {
+	    throw exc;
+	}
+    }
+</pre>
+</div>
+
+<p>
+emacs 的實作如下：
+</p>
+
+<p>
+<a href="eval.c/catch">Bookmark: eval.c/catch</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-C">DEFUN ("catch", Fcatch, Scatch, 1, UNEVALLED, 0,
+       doc: /* Eval BODY allowing nonlocal exits using `throw'.
+TAG is evalled to get the tag to use; it must not be nil.
+
+Then the BODY is executed.
+Within BODY, a call to `throw' with the same TAG exits BODY and this `catch'.
+If no throw happens, `catch' returns the value of the last BODY form.
+If a throw happens, it specifies the value to return from `catch'.
+usage: (catch TAG BODY...)  */)
+  (Lisp_Object args)
+{
+  register Lisp_Object tag;
+  struct gcpro gcpro1;
+
+  GCPRO1 (args);
+  tag = eval_sub (XCAR (args));
+  UNGCPRO;
+  return internal_catch (tag, Fprogn, XCDR (args));
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline89" class="outline-2">
+<h2 id="orgheadline89"><span class="section-number-2">4</span> 推估應預載模組</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+(load "emacs-lisp/byte-run")
+(load "emacs-lisp/backquote")
+(load "emacs-lisp/map-ynp")
+(load "emacs-lisp/macroexp")
+    (load "emacs-lisp/pcase"))
+  (load "emacs-lisp/macroexp"))
+(load "emacs-lisp/nadvice")
+(load "emacs-lisp/syntax")
+(load "emacs-lisp/timer")
+(load "emacs-lisp/lisp")
+(load "emacs-lisp/lisp-mode")
+(load "emacs-lisp/tabulated-list")
+      (load "emacs-lisp/regexp-opt")
+(load "emacs-lisp/float-sup")
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Sigmund Tzeng</p>
+<p class="date">Created: 2016-02-17 Wed 18:00</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
