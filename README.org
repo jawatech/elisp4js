@@ -184,30 +184,36 @@ initial_obarray 是最初始的物件陣列，包含了最開始的三個常量�
 
 最陽春的符號就是 Qt ，其定義代表最低要求 intern_c_string & SET_SYMBOL_VAL
 ***** Qt: "t"
-****** Qt = intern_c_string ("t");
-****** SET_SYMBOL_VAL (XSYMBOL (Qt), Qt);
-****** XSYMBOL (Qt)->constant = 1;
+#+BEGIN_SRC C
+Qt = intern_c_string ("t");
+SET_SYMBOL_VAL (XSYMBOL (Qt), Qt);
+XSYMBOL (Qt)->constant = 1;
+#+END_SRC
 
 ***** Qnil: "nil"
+#+BEGIN_SRC C
   /* Set temporary dummy values to Qnil and Vpurify_flag to satisfy the
      NILP (Vpurify_flag) check in intern_c_string.  */
   Qnil = make_number (-1); Vpurify_flag = make_number (1);
-****** Qnil = intern_c_string ("nil");
-****** SET_SYMBOL_VAL (XSYMBOL (Qnil), Qnil);
-****** XSYMBOL (Qnil)->constant = 1;
+  Qnil = intern_c_string ("nil");
+  SET_SYMBOL_VAL (XSYMBOL (Qnil), Qnil);
+  XSYMBOL (Qnil)->constant = 1;
   XSYMBOL (Qnil)->declared_special = 1;
   set_symbol_plist (Qnil, Qnil);
   set_symbol_function (Qnil, Qnil);
 
-   XSYMBOL (Qnil)->declared_special = 1;
+  XSYMBOL (Qnil)->declared_special = 1;
+#+END_SRC
 
 ***** Qunbound: "unbound"
+#+BEGIN_SRC C
   Qunbound = Fmake_symbol (build_pure_c_string ("unbound"));
   /* Fmake_symbol inits fields of new symbols with Qunbound and Qnil,
      so those two need to be fixed manually.  */
-****** SET_SYMBOL_VAL (XSYMBOL (Qunbound), Qunbound);
+  SET_SYMBOL_VAL (XSYMBOL (Qunbound), Qunbound);
   set_symbol_function (Qunbound, Qnil);
   set_symbol_plist (Qunbound, Qnil);
+#+END_SRC
 
 **** init_XXX: 以 Vcommand_line_args 為例
 [[bookmark:init_cmdargs%20(argc,%20argv,%20skip_args,%20original_pwd);][Bookmark: init_cmdargs (argc, argv, skip_args, original_pwd);]]
@@ -216,6 +222,7 @@ initial_obarray 是最初始的物件陣列，包含了最開始的三個常量�
 
 [[bookmark:Fcons%20(build_unibyte_string%20(argv%5Bi%5D),%20Vcommand_line_args);][Bookmark: Fcons (build_unibyte_string (argv{i}), Vcommand_line_args);]]
 
+#+BEGIN_SRC C
   Vcommand_line_args = Qnil;
 
   for (i = argc - 1; i >= 0; i--)
@@ -227,6 +234,7 @@ initial_obarray 是最初始的物件陣列，包含了最開始的三個常量�
 	Vcommand_line_args
 	  = Fcons (build_unibyte_string (argv[i]), Vcommand_line_args);
     }
+#+END_SRC
 
 **** DEFVAR in syms_of_emacs ()
 [[bookmark:syms_of_emacs%20();][Bookmark: syms_of_emacs ();]]
@@ -235,9 +243,11 @@ initial_obarray 是最初始的物件陣列，包含了最開始的三個常量�
 
 [[bookmark:DEFVAR_LISP%20("command-line-args",%20Vcommand_line_args,][Bookmark: DEFVAR_LISP ("command-line-args", Vcommand_line_args,]]
 
+#+BEGIN_SRC C
   DEFVAR_LISP ("command-line-args", Vcommand_line_args,
 	       doc: /* Args passed by shell to Emacs, as a list of strings.
 Many arguments are deleted from the list as they are processed.  */);
+#+END_SRC
 
 DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料，作用比較單純
 
@@ -247,6 +257,7 @@ DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料
 
   [[bookmark:#define%20DEFVAR_LISP(lname,%20vname,%20doc)][Bookmark: #define DEFVAR_LISP(lname, vname, doc)]]
 
+#+BEGIN_SRC C
   /* Macros we use to define forwarded Lisp variables.
      These are used in the syms_of_FILENAME functions.
 
@@ -269,6 +280,7 @@ DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料
       static struct Lisp_Objfwd o_fwd;		\
       defvar_lisp (&o_fwd, lname, &globals.f_ ## vname);		\
     } while (false)
+#+END_SRC
 
   在執行最開始的 make 的過程中，所有 DEFVAR 的 vname 會被收集到 globals.h 當中， 成為 emacs_globasl 的一個欄位， 名稱會加上前綴 f_ , 然後又被巨集宣告為與 lname 同名的變數。
 ***** defvar_lisp @ lread.c
@@ -276,6 +288,7 @@ DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料
 
   [[bookmark:defvar_lisp%20(struct%20Lisp_Objfwd%20*o_fwd,][Bookmark: defvar_lisp (struct Lisp_Objfwd *o_fwd,]]
 
+#+BEGIN_SRC C
   /* Similar but define a variable whose value is the Lisp Object stored
      at address.  Two versions: with and without gc-marking of the C
      variable.  The nopro version is used when that variable will be
@@ -301,9 +314,11 @@ DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料
     defvar_lisp_nopro (o_fwd, namestring, address);
     staticpro (address);
   }
+#+END_SRC
 ***** staticpro: garbage collection
   [[bookmark:staticpro%20(Lisp_Object%20*varaddress)][Bookmark: staticpro (Lisp_Object *varaddress)]]
 
+#+BEGIN_SRC C
   /***********************************************************************
 			    Protection from GC
    ***********************************************************************/
@@ -318,23 +333,28 @@ DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料
       fatal ("NSTATICS too small; try increasing and recompiling Emacs.");
     staticvec[staticidx++] = varaddress;
   }
+#+END_SRC
 ***** SET_SYMBOL_FWD
  [[bookmark:SET_SYMBOL_FWD%20(struct%20Lisp_Symbol%20*sym,%20union%20Lisp_Fwd%20*v)][Bookmark: SET_SYMBOL_FWD (struct Lisp_Symbol *sym, union Lisp_Fwd *v)]]
 
+#+BEGIN_SRC C
  INLINE void
  SET_SYMBOL_FWD (struct Lisp_Symbol *sym, union Lisp_Fwd *v)
  {
    eassert (sym->redirect == SYMBOL_FORWARDED);
    sym->val.fwd = v;
  }
+#+END_SRC
 ***** SYMBOL_FORWARDED 影響到的函數
 ****** specbind
  特重要！！！ lisp 中的這些函數也需要它： let, 以及因為實質上使用了 let 而以 C 改寫的函數
 ****** 其它
 ******* buffer_local_value_1
+#+BEGIN_SRC C
   /* Return the value of VARIABLE in BUFFER.
   If VARIABLE does not have a buffer-local binding in BUFFER, the value
   is the default binding of the variable. */
+#+END_SRC
 ******* store_frame_param
 ******* mark_object
 
@@ -343,7 +363,9 @@ DEFVAR 的作用似乎是直接在 global 的 symbol table 中寫入一筆資料
 **** 兼論 expand-file-name
 [[bookmark:EMACSLOADPATH=$(CURDIR)/../lisp][Bookmark: EMACSLOADPATH=$(CURDIR)/../lisp]]
 
+#+BEGIN_SRC C
 DEFUN ("expand-file-name", Fexpand_file_name, Sexpand_file_name, 1, 2, 0,
+#+END_SRC
 
 
 
@@ -357,6 +379,7 @@ DEFUN ("expand-file-name", Fexpand_file_name, Sexpand_file_name, 1, 2, 0,
 
  [[bookmark:#define%20DEFUN(lname,%20fnname,%20sname,%20minargs,%20maxargs,%20intspec,%20doc)][Bookmark: #define DEFUN(lname, fnname, sname, minargs, maxargs, intspec, doc)]]
 
+#+BEGIN_SRC C
 #  define DEFUN_FUNCTION_INIT(fnname, maxargs) .a ## maxargs = fnname
 
 #define DEFUN(lname, fnname, sname, minargs, maxargs, intspec, doc)	\
@@ -366,6 +389,7 @@ DEFUN ("expand-file-name", Fexpand_file_name, Sexpand_file_name, 1, 2, 0,
        { DEFUN_FUNCTION_INIT (fnname, maxargs) },			\
        minargs, maxargs, lname, intspec, 0};				\
    Lisp_Object fnname
+#+END_SRC
 
 sname 此一結構的 an 成員 (0<=n<=9) 即為 FXXX 形式的函數（指標？）
 
@@ -381,13 +405,17 @@ sname 此一結構的 an 成員 (0<=n<=9) 即為 FXXX 形式的函數（指標�
 
 [[bookmark:intern_c_string_1%20(const%20char%20*str,%20ptrdiff_t%20len)][Bookmark: intern_c_string_1 (const char *str, ptrdiff_t len)]]
 
+#+BEGIN_SRC C
 /* Intern the C string STR: return a symbol with that name,
    interned in the current Vobarray.  */
 
 
 typedef EMACS_INT Lisp_Object;
+#+END_SRC
 ***** XSETSUBR (tem, sname)
+#+BEGIN_SRC C
 #define XSETSUBR(a, b) (XSETPSEUDOVECTOR (a, b, PVEC_SUBR))
+#+END_SRC
 ***** set_symbol_function
 然後呼叫 set_symbol_function 把符號和函數連結起來
 
