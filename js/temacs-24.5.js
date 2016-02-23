@@ -231,7 +231,7 @@ rep("(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first x
 if (typeof process !== 'undefined' && process.argv.length > 2) {
     repl_env.set(types._symbol('command-line-args'), process.argv); //.slice(3));
     rep('(load-file "' + process.argv[2] + '")');
-    process.exit(0);
+//    process.exit(0);
 }
 
 // repl loop
