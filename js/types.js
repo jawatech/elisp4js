@@ -158,6 +158,10 @@ function _hash_map() {
     var args = [{}].concat(Array.prototype.slice.call(arguments, 0));
     return _assoc_BANG.apply(null, args);
 }
+function _hash_table() {
+    var args = [{}];
+    return _assoc_BANG.apply(null, args);
+}
 function _hash_map_Q(hm) {
     return typeof hm === "object" &&
            !Array.isArray(hm) &&

@@ -1,4 +1,7 @@
 // Node vs browser behavior
+var printer = require('./printer');
+var sprintf = require("sprintf-js").sprintf,
+    vsprintf = require("sprintf-js").vsprintf;
 var core = {};
 if (typeof module === 'undefined') {
     var exports = core;
@@ -94,6 +97,12 @@ function cons(a, b) { return [a].concat(b); }
 function concat(lst) {
     lst = lst || [];
     return lst.concat.apply(lst, Array.prototype.slice.call(arguments, 1));
+}
+
+function message() {
+    var txt = vsprintf(arguments[0], Array.prototype.slice.call(arguments, 1));
+    printer.println(txt);
+    return txt;
 }
 
 function nth(lst, idx) {
@@ -196,6 +205,7 @@ var ns = {'type': types._obj_type,
           '*'  : function(a,b){return a*b;},
           '/'  : function(a,b){return a/b;},
           'eq'  : function(a,b){return a===b;},
+          'message'  : message,
           "time-ms": time_ms,
 
           'list': types._list,
@@ -203,6 +213,7 @@ var ns = {'type': types._obj_type,
           'vector': types._vector,
           'vector?': types._vector_Q,
           'hash-map': types._hash_map,
+          'make-hash-table': types._hash_table,
           'map?': types._hash_map_Q,
           'assoc': assoc,
           'dissoc': dissoc,
