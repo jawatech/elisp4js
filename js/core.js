@@ -94,6 +94,16 @@ function vals(hm) { return Object.keys(hm).map(function(k) { return hm[k]; }); }
 // Sequence functions
 function cons(a, b) { return [a].concat(b); }
 
+function member(elt, list) { 
+    for(var tail=list;! empty_Q(tail);tail=rest(tail)){
+        var tem=first(tail);
+        if(types._equal_Q(elt,tem)){
+            return tail;
+        }
+    }    
+    return 'nil';
+}
+
 function concat(lst) {
     lst = lst || [];
     return lst.concat.apply(lst, Array.prototype.slice.call(arguments, 1));
@@ -234,6 +244,7 @@ var ns = {'type': types._obj_type,
           'apply': apply,
           'map': map,
           'conj': conj,
+          'member': member,
 
           'with-meta': with_meta,
           'meta': meta,
