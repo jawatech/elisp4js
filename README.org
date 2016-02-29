@@ -887,7 +887,32 @@ usage: (catch TAG BODY...)  */)
 ** load
 [[bookmark:DEFUN%20("load",%20Fload,%20Sload,%201,%205,%200,][Bookmark: DEFUN ("load", Fload, Sload, 1, 5, 0,]]
 
+*** Execute a file of Lisp code named FILE.
 
+*** `load-history'
+Loading a file records its definitions, and its `provide' and
+`require' calls, in an element of `load-history' whose
+car is the file name loaded.  See `load-history'.
+
+*** `load-in-progress' / `load-file-name'
+While the file is in the process of being loaded, the variable
+`load-in-progress' is non-nil and the variable `load-file-name'
+is bound to the file's name.
+
+Check if we're stuck in a recursive load cycle.
+
+    Vloads_in_progress = Fcons (found, Vloads_in_progress);
+
+  /* Get the name for load-history.  */
+  hist_file_name = (! NILP (Vpurify_flag)
+                    ? concat2 (Ffile_name_directory (file),
+                               Ffile_name_nondirectory (found))
+                    : found) ;
+
+  version = -1;
+
+*** return
+Return t if the file exists and loads successfully.
 * 推估應預載模組
 (load "emacs-lisp/byte-run")
 (load "emacs-lisp/backquote")

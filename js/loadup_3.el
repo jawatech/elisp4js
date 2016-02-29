@@ -33,3 +33,4 @@
 (setq buffer-undo-list t)
 
 (load "emacs-lisp/byte-run")
+(load "emacs-lisp/backquote")

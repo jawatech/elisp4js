@@ -223,6 +223,7 @@ repl_env.set(types._symbol('load-path'), '../lisp');
 rep("(setq *host-language* \"javascript\")")
 rep("(setq not (fn* (a) (if a false true)))");
 rep("(setq load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))");
+rep("(setq load (fn* (f) (eval (read-string (str \"(do \" (slurp (concat f \".el\")) \")\")))))");
 // set-buffer dummy implementation
 rep("(setq set-buffer (fn* (f) (message f)))");
 
