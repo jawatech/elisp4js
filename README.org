@@ -879,6 +879,15 @@ usage: (catch TAG BODY...)  */)
 }
 #+END_SRC
 
+* $(RUN_TEMACS) --batch --load loadup bootstrap
+
+** set-buffer
+[[bookmark:DEFUN%20("set-buffer",%20Fset_buffer,%20Sset_buffer,%201,%201,%200,][Bookmark: DEFUN ("set-buffer", Fset_buffer, Sset_buffer, 1, 1, 0,]]
+
+** load
+[[bookmark:DEFUN%20("load",%20Fload,%20Sload,%201,%205,%200,][Bookmark: DEFUN ("load", Fload, Sload, 1, 5, 0,]]
+
+
 * 推估應預載模組
 (load "emacs-lisp/byte-run")
 (load "emacs-lisp/backquote")

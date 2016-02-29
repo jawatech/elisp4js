@@ -27,3 +27,9 @@
     ;; To reduce the size of dumped Emacs, we avoid making huge
     ;; char-tables.
     (setq inhibit-load-charset-map t))
+
+;; We don't want to have any undo records in the dumped Emacs.
+(set-buffer "*scratch*")
+(setq buffer-undo-list t)
+
+(load "emacs-lisp/byte-run")

@@ -223,6 +223,9 @@ repl_env.set(types._symbol('load-path'), '../lisp');
 rep("(setq *host-language* \"javascript\")")
 rep("(setq not (fn* (a) (if a false true)))");
 rep("(setq load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))");
+// set-buffer dummy implementation
+rep("(setq set-buffer (fn* (f) (message f)))");
+
 rep("(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
 rep("(setq *gensym-counter* (atom 0))");
 rep("(setq gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))");
