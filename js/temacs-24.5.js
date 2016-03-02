@@ -86,6 +86,12 @@ function _EVAL(ast, env) {
 
     var a0 = ast[0], a1 = ast[1], a2 = ast[2], a3 = ast[3];
     switch (a0.value) {
+    case "defvar":
+        if(!env.find(a1)){
+                var res = EVAL(a2, env);
+                env.set(a1, res);
+        }
+        return a1;
     case "setq":
         var res = EVAL(a2, env);
         return env.set(a1, res);
@@ -179,7 +185,7 @@ function _EVAL(ast, env) {
             ast = a2;
         }
         break;
-    case "fn*":
+    case "lambda":
         return types._function(EVAL, Env, a2, env, a1);
     default:
         if (debug) printer.println(' : '+printer._pr_str(ast,true));
@@ -221,17 +227,23 @@ repl_env.set(types._symbol('load-path'), '../lisp');
 
 // core.mal: defined using the language itself
 rep("(setq *host-language* \"javascript\")")
-rep("(setq not (fn* (a) (if a false true)))");
-rep("(setq load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))");
-rep("(setq load (fn* (f) (eval (read-string (str \"(do \" (slurp (concat f \".el\")) \")\")))))");
+rep("(setq not (lambda (a) (if a false true)))");
+rep("(setq load-file (lambda (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))");
+rep("(setq load (lambda (f) (eval (read-string (str \"(do \" (slurp (concat f \".el\")) \")\")))))");
+//rep("(setq defvar (lambda (f) (setq f nil)))");
+
+rep("(setq defun (lambda (n p f) (setq n (lambda (p) (f)))))");
 // set-buffer dummy implementation
-rep("(setq set-buffer (fn* (f) (message f)))");
+rep("(setq set-buffer (lambda (f) (message f)))");
 
-rep("(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
+rep("(defmacro! cond (lambda (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
 rep("(setq *gensym-counter* (atom 0))");
-rep("(setq gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))");
-rep("(defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* ((condvar (gensym))) `(let* ((~condvar ~(first xs))) (if ~condvar ~condvar (or ~@(rest xs))))) ))))");
+rep("(setq gensym (lambda [] (symbol (str \"G__\" (swap! *gensym-counter* (lambda [x] (+ 1 x)))))))");
+rep("(defmacro! or (lambda (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* ((condvar (gensym))) `(let* ((~condvar ~(first xs))) (if ~condvar ~condvar (or ~@(rest xs))))) ))))");
 
+rep("(defvar features )");
+rep("(setq provide (lambda (feature) (if (not (member feature features)) (setq features (cons feature features)))))");
+rep("(setq featurep (lambda (feature) (member feature features)))");
 if (typeof process !== 'undefined' && process.argv.length > 2) {
     repl_env.set(types._symbol('command-line-args'), process.argv); //.slice(3));
     rep('(load-file "' + process.argv[2] + '")');

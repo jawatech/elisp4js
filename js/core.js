@@ -95,6 +95,7 @@ function vals(hm) { return Object.keys(hm).map(function(k) { return hm[k]; }); }
 function cons(a, b) { return [a].concat(b); }
 
 function member(elt, list) { 
+    if(list)
     for(var tail=list;! empty_Q(tail);tail=rest(tail)){
         var tem=first(tail);
         if(types._equal_Q(elt,tem)){
