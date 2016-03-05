@@ -147,7 +147,7 @@ function _EVAL(ast, env) {
     case "quasiquote":
         ast = quasiquote(a1);
         break;
-    case 'defmacro!':
+    case 'defmacro':
         var func = EVAL(a2, env);
         func._ismacro_ = true;
         return env.set(a1, func);
@@ -187,6 +187,9 @@ function _EVAL(ast, env) {
         break;
     case "lambda":
         return types._function(EVAL, Env, a2, env, a1);
+    case "defun":
+        env.set(a1, types._function(EVAL, Env, a3, env, a2));
+        return a1;
     default:
         if (debug) printer.println(' : '+printer._pr_str(ast,true));
         var el = eval_ast(ast, env), f = el[0];
@@ -232,14 +235,14 @@ rep("(setq load-file (lambda (f) (eval (read-string (str \"(do \" (slurp f) \")\
 rep("(setq load (lambda (f) (eval (read-string (str \"(do \" (slurp (concat f \".el\")) \")\")))))");
 //rep("(setq defvar (lambda (f) (setq f nil)))");
 
-rep("(setq defun (lambda (n p f) (setq n (lambda (p) (f)))))");
+//rep("(setq defun (lambda (n p f) (setq n (lambda (p) (f)))))");
 // set-buffer dummy implementation
 rep("(setq set-buffer (lambda (f) (message f)))");
 
-rep("(defmacro! cond (lambda (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
+rep("(defmacro cond (lambda (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
 rep("(setq *gensym-counter* (atom 0))");
 rep("(setq gensym (lambda [] (symbol (str \"G__\" (swap! *gensym-counter* (lambda [x] (+ 1 x)))))))");
-rep("(defmacro! or (lambda (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* ((condvar (gensym))) `(let* ((~condvar ~(first xs))) (if ~condvar ~condvar (or ~@(rest xs))))) ))))");
+rep("(defmacro or (lambda (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let* ((condvar (gensym))) `(let* ((~condvar ~(first xs))) (if ~condvar ~condvar (or ~@(rest xs))))) ))))");
 
 rep("(defvar features )");
 rep("(setq provide (lambda (feature) (if (not (member feature features)) (setq features (cons feature features)))))");

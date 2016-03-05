@@ -32,5 +32,5 @@
 (set-buffer "*scratch*")
 (setq buffer-undo-list t)
 
-;(load "emacs-lisp/byte-run")
-(load "emacs-lisp/backquote")
+(load "emacs-lisp/byte-run")
+;(load "emacs-lisp/backquote")

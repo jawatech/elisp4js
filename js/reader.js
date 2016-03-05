@@ -15,7 +15,7 @@ Reader.prototype.next = function() { return this.tokens[this.position++]; }
 Reader.prototype.peek = function() { return this.tokens[this.position]; }
 
 function tokenize(str) {
-    var re = /[\s,]*(~@|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"|;.*|[^\s\[\]{}('"`,;)]*)/g;
+    var re = /[\s,]*(~@|#[']|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"|;.*|[^\s\[\]{}('"`,;)]*)/g;
     var results = [];
     while ((match = re.exec(str)[1]) != '') {
         if (match[0] === ';') { continue; }
@@ -85,6 +85,8 @@ function read_form(reader) {
     switch (token) {
     // reader macros/transforms
     case ';': return null; // Ignore comments
+    case '#\'': reader.next(); //ignore pound; http://stackoverflow.com/questions/2701698/emacs-elisp-what-is-the-hash-pound-number-sign-octothorp-symbol-used-for
+               return [types._symbol('quote'), read_form(reader)];
     case '\'': reader.next();
                return [types._symbol('quote'), read_form(reader)];
     case '`': reader.next();
